@@ -1,0 +1,74 @@
+[
+  {
+  "whatsapp:+91XXXXXXXXXX_PLACEHOLDER_KOPPALA": {
+    "persona_hint": "koppala_gj_hard_cliff_level_2",
+    "extraction": {
+      "is_mescom_bill": true,
+      "extraction_confidence": 0.95,
+      "consumer_name": "KOPPALA HAMZA BYARI",
+      "rr_number": "3215713",
+      "tariff_category": "LT-1",
+      "billing_period_start": "2026-03-10",
+      "billing_period_end": "2026-04-10",
+      "billing_period_days": 31,
+      "sanctioned_load_kw": 2.0,
+      "previous_reading": 10116,
+      "current_reading": 10506,
+      "units_consumed": 390,
+      "energy_charges": 2262.00,
+      "fixed_charges": 290.00,
+      "pg_surcharge": 140.40,
+      "electricity_tax": 203.58,
+      "fppca": 148.20,
+      "other_charges": 0.00,
+      "subtotal_1_before_subsidy": 3044.18,
+      "is_gruha_jyothi_beneficiary": true,
+      "gjs_registration_date": "2023-07-25",
+      "historical_avg_baseline": 57.0,
+      "entitlement_units": 63.0,
+      "units_eligible_for_subsidy": 0.0,
+      "units_chargeable": 390.0,
+      "gruha_jyothi_subsidy_amount": 0.0,
+      "net_bill_amount": 3044.18,
+      "due_date": "2026-04-24",
+      "arrears": 927.00
+    }
+  }
+}, 
+{
+  "whatsapp:+91XXXXXXXXXX_PLACEHOLDER_MOHAMMED_RIGHT": {
+    "persona_hint": "mohammed_gj_approaching_cliff",
+    "extraction": {
+      "is_mescom_bill": true,
+      "extraction_confidence": 0.95,
+      "consumer_name": "MOHAMMED HAYATH SO MOHAMMED HANEEF",
+      "rr_number": "0472205719",
+      "tariff_category": "LT-1",
+      "billing_period_start": "2025-09-07",
+      "billing_period_end": "2025-10-07",
+      "billing_period_days": 30,
+      "sanctioned_load_kw": 1.0,
+      "previous_reading": 9046,
+      "current_reading": 9236,
+      "units_consumed": 190,
+      "energy_charges": 1102.00,
+      "fixed_charges": 145.00,
+      "pg_surcharge": 68.40,
+      "electricity_tax": 99.18,
+      "fppca": 68.40,
+      "other_charges": 0.00,
+      "subtotal_1_before_subsidy": 1482.98,
+      "is_gruha_jyothi_beneficiary": true,
+      "gjs_registration_date": "2023-06-29",
+      "historical_avg_baseline": 130.5,
+      "entitlement_units": 144.0,
+      "units_eligible_for_subsidy": 144.0,
+      "units_chargeable": 46.0,
+      "gruha_jyothi_subsidy_amount": 1159.05,
+      "net_bill_amount": 323.93,
+      "due_date": "2025-10-21",
+      "arrears": 0.00
+    }
+  }
+}
+]
