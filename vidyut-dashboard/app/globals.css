@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-cream: #F8F7F3;
+  --black-deep: #000000;
+  --card-white: #FFFFFF;
+  --border-soft: #E5E7EB;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: var(--bg-cream);
+  color: var(--black-deep);
+}
+
+* {
+  box-sizing: border-box;
+}
