@@ -5,11 +5,11 @@
 *.key
 google-service-account*.json
 
-# Bill samples (real consumer data, never commit)
+# Bill samples
 sample_bills/*
 !sample_bills/README.md
 
-# Real consumer bills (DPDPA: never commit)
+# Real consumer bills 
 data/mescom_bills/
 
 # Claude Code local settings
@@ -52,11 +52,10 @@ dist/
 # Streamlit
 .streamlit/secrets.toml
 
-# `demo_fallbacks.json` IS tracked — it uses placeholder phone-number keys and
-# carries two entries (one real REHENA extraction + one synthetic KOPPALA)
-# that the pipeline needs. Before demo rehearsal, Sunday prep swaps the
-# placeholder keys for real demo phones in a LOCAL copy; do not commit that.
-
 # Logs
 *.log
 logs/
+
+node_modules/
+vidyut-dashboard/.next/
+*.tsbuildinfo
