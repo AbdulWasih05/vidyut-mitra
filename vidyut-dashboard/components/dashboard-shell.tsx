@@ -286,11 +286,23 @@ export default function DashboardShell() {
             </p>
             <p className="mt-1 text-[#cfe0d6]/80">
               {error
-                ? "Backend unreachable. Showing sample data."
+                ? "Backend not hosted - showing mock data."
                 : usingMock
-                  ? "Mock data mode. Live fetches paused."
+                  ? "Mock data mode - live fetches paused."
                   : "All webhook services operational."}
             </p>
+            <button
+              onClick={() => setUseMock((v) => !v)}
+              className={[
+                "mt-3 flex w-full items-center justify-between rounded-full border px-3 py-1.5 text-xs transition",
+                useMock
+                  ? "border-gold/40 bg-gold/15 text-gold"
+                  : "border-white/15 text-[#cfe0d6] hover:bg-white/10",
+              ].join(" ")}
+            >
+              Mock data
+              <span className="font-medium">{useMock ? "On" : "Off"}</span>
+            </button>
             <p className="mt-3 text-[11px] text-marigold/70">Updated {lastUpdated}</p>
           </div>
         </div>
@@ -320,28 +332,6 @@ export default function DashboardShell() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              {usingMock ? (
-                <span className="hidden rounded-full border border-gold/40 bg-gold/15 px-3 py-1 text-xs font-medium text-amber-800 md:inline-flex">
-                  Sample data
-                </span>
-              ) : null}
-              <button
-                onClick={() => setUseMock((v) => !v)}
-                className={[
-                  "flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition",
-                  useMock
-                    ? "border-gold/40 bg-gold/15 text-amber-800"
-                    : "border-ink/10 bg-paper-2 text-ink-soft hover:border-green/40 hover:text-green-deep",
-                ].join(" ")}
-              >
-                <span
-                  className={[
-                    "inline-block h-2 w-2 rounded-full",
-                    useMock ? "bg-gold" : "bg-ink-faint/50",
-                  ].join(" ")}
-                />
-                Mock data
-              </button>
               <Link
                 href="/"
                 className="hidden items-center gap-2 rounded-full border border-ink/10 bg-paper-2 px-4 py-2 text-sm text-ink-soft transition hover:border-green/40 hover:text-green-deep sm:inline-flex"
@@ -357,10 +347,10 @@ export default function DashboardShell() {
         </header>
 
         <section className="space-y-6 px-4 py-6 md:px-8">
-          {error ? (
+          {/* {error ? (
             <div className="rounded-card border border-terracotta/30 bg-terracotta/10 p-4 text-sm text-bronze">
               <p className="font-medium">
-                Cannot reach admin API. Showing sample data below.
+                Cannot reach admin API. Showing mock data below.
               </p>
               <p className="mt-1">{error}</p>
               <p className="mt-2 text-xs text-terracotta">
@@ -368,7 +358,7 @@ export default function DashboardShell() {
                 matches the server&apos;s ADMIN_PASSWORD.
               </p>
             </div>
-          ) : null}
+          ) : null} */}
 
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <MetricCard
