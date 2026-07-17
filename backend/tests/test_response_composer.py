@@ -77,7 +77,7 @@ class TestNonGJResponse:
 
 
 # =============================================================================
-# GJ composition (Priya) — highest-precedence warning only
+# GJ composition (Priya) - highest-precedence warning only
 # =============================================================================
 
 
@@ -119,7 +119,7 @@ class TestGJResponse:
 
 
 # =============================================================================
-# Dispatcher — compose_for_result picks right template
+# Dispatcher - compose_for_result picks right template
 # =============================================================================
 
 
@@ -172,7 +172,7 @@ class TestLanguageWrapper:
 
 
 class TestClimateSectionsInMainResponse:
-    """Session 5.8 — every persona response includes Climate Footprint +
+    """Session 5.8 - every persona response includes Climate Footprint +
     Conservation Tip + a solar-scale line in the Solar ROI section."""
 
     def test_nikhil_response_has_climate_footprint(self):

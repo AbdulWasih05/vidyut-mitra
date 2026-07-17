@@ -1,6 +1,6 @@
 """Smoke tests for db/supabase_client.py.
 
-All Supabase calls are mocked via ``FakeSupabaseClient`` — a minimal
+All Supabase calls are mocked via ``FakeSupabaseClient`` - a minimal
 in-memory double that mimics the chainable ``.table(...).select(...)...``
 API. No real network hits.
 """
@@ -18,7 +18,7 @@ pytestmark = pytest.mark.smoke
 
 
 # =============================================================================
-# FakeSupabaseClient — 80-line double of the Supabase chainable API
+# FakeSupabaseClient - 80-line double of the Supabase chainable API
 # =============================================================================
 
 
@@ -82,7 +82,7 @@ class _FakeQueryBuilder:
         if self._op == "delete":
             matching = [r for r in rows if self._match(r)]
             if self.table_name == "users":
-                # CASCADE bills — match DB schema's ON DELETE CASCADE.
+                # CASCADE bills - match DB schema's ON DELETE CASCADE.
                 for m in matching:
                     uid = m.get("id")
                     self.backing["bills"] = [
@@ -172,7 +172,7 @@ class TestUsers:
 
 
 # =============================================================================
-# write_bill — DPDPA forbidden-field guards
+# write_bill - DPDPA forbidden-field guards
 # =============================================================================
 
 
@@ -240,7 +240,7 @@ class TestWriteBillDPDPA:
 
 
 # =============================================================================
-# delete_user_cascade — hard delete + bill counts
+# delete_user_cascade - hard delete + bill counts
 # =============================================================================
 
 

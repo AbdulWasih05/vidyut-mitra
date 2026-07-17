@@ -1,4 +1,4 @@
-"""Live Supabase integration test — end-to-end user + bill lifecycle.
+"""Live Supabase integration test - end-to-end user + bill lifecycle.
 
 Skipped by default. Run with::
 
@@ -60,7 +60,7 @@ def test_end_to_end_user_and_bill_lifecycle():
     _require_supabase()
     from backend.db import supabase_client
 
-    # Belt-and-braces cleanup first — in case a previous test didn't teardown.
+    # Belt-and-braces cleanup first - in case a previous test didn't teardown.
     supabase_client.delete_user_cascade(TEST_PHONE)
 
     try:

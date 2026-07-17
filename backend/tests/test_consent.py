@@ -40,7 +40,7 @@ PHONE = "+919876543210"
 
 
 # =============================================================================
-# State machine — never_contacted → awaiting_consent → consented
+# State machine - never_contacted → awaiting_consent → consented
 # =============================================================================
 
 
@@ -69,7 +69,7 @@ class TestStateMachine:
         assert second.state is ConsentState.CONSENTED
         assert second.message == ALREADY_CONSENTED_TEMPLATE
         assert second.allow_processing is True
-        # Still exactly one row — no duplicate inserts.
+        # Still exactly one row - no duplicate inserts.
         assert len(fake_client.users) == 1
 
     def test_first_contact_then_start(self, fake_client):
@@ -80,7 +80,7 @@ class TestStateMachine:
 
 
 # =============================================================================
-# STOP command — two message variants per PRD §2.4
+# STOP command - two message variants per PRD §2.4
 # =============================================================================
 
 
@@ -92,7 +92,7 @@ class TestStop:
         assert resp.state is ConsentState.NEVER_CONTACTED
         assert resp.allow_processing is False
         assert "permanently deleted" in resp.message
-        # Hard delete — no row remains.
+        # Hard delete - no row remains.
         assert fake_client.users == []
 
     def test_stop_on_never_consented_returns_no_data_variant(self, fake_client):
@@ -124,7 +124,7 @@ class TestStop:
 
 
 # =============================================================================
-# Unconsented media path — the tight prompt, no processing allowed
+# Unconsented media path - the tight prompt, no processing allowed
 # =============================================================================
 
 
@@ -134,12 +134,12 @@ class TestUnconsentedMedia:
         assert resp.state is ConsentState.AWAITING_CONSENT
         assert resp.allow_processing is False
         assert "START" in resp.message or "start" in resp.message.lower()
-        # Fake client was never used — pure function, no DB touch.
+        # Fake client was never used - pure function, no DB touch.
         assert fake_client.users == []
 
 
 # =============================================================================
-# Template sanity — every template includes Kannada text per PRD §2.1
+# Template sanity - every template includes Kannada text per PRD §2.1
 # =============================================================================
 
 

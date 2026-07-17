@@ -1,4 +1,4 @@
-"""WhatsApp response templates — pure functions, no I/O.
+"""WhatsApp response templates - pure functions, no I/O.
 
 Source templates: PRD §2.1 STEP 4 (non-GJ) and §2.2 STEP 4b (GJ). Box-drawing
 characters + emoji render fine on WhatsApp; Kannada snippets are verbatim
@@ -36,7 +36,7 @@ WHATSAPP_MESSAGE_LIMIT = 1600
 
 # Localized header + footer wrapping the (English) bill body. Body stays in
 # English because KERC/MNRE technical terms (Sub-Total-1, kW, PM Surya Ghar)
-# don't translate cleanly and machine translation creates accuracy risk —
+# don't translate cleanly and machine translation creates accuracy risk -
 # the voice note already provides a Kannada summary. We localize ONLY the
 # wrapper so users see the language switch land immediately.
 _INTRO_BY_LANG = {
@@ -54,7 +54,7 @@ def _wrap_with_locale(body: str, language: str) -> str:
     footer = _FOOTER_BY_LANG.get(language, _FOOTER_BY_LANG["en"])
     return f"{intro}\n\n{body}\n\n{footer}"
 
-# Cliff precedence — user override of tech spec (Session 3): eligibility >
+# Cliff precedence - user override of tech spec (Session 3): eligibility >
 # monthly_hard > soft_step > approaching_entitlement. The GJ response only
 # shows the HIGHEST-precedence warning in the cliff section.
 _CLIFF_PRECEDENCE = (
@@ -66,7 +66,7 @@ _CLIFF_PRECEDENCE = (
 
 
 # =============================================================================
-# Non-GJ response — PRD §2.1 STEP 4
+# Non-GJ response - PRD §2.1 STEP 4
 # =============================================================================
 
 
@@ -80,7 +80,7 @@ def compose_non_gj_response(
     fct = result.fct
     pmsg = result.pm_surya_ghar
 
-    # Subsidy eligibility lines — conditional.
+    # Subsidy eligibility lines - conditional.
     pmsg_line = (
         f"☀️ PM Surya Ghar: ELIGIBLE\n"
         f"   → 3 kW system, Rs. {pmsg['subsidy_amount']:,} subsidy\n"
@@ -104,7 +104,7 @@ def compose_non_gj_response(
             f"typical usage suggests ~{fct.estimated_peak_kw:.1f} kW peak "
             f"demand.\n"
             f"You may be paying Rs. {fct.excess_monthly_cost:.0f}/month "
-            f"extra in fixed charges — that's Rs. "
+            f"extra in fixed charges - that's Rs. "
             f"{fct.excess_annual_cost:,.0f}/year.\n\n"
             f"Reducing to {fct.recommended_load_kw:.0f} kW requires a "
             f"MESCOM application and possibly a meter change.\n\n"
@@ -154,14 +154,14 @@ def compose_non_gj_response(
         "━━━━━━━━━━━━━━━━━━━━━━━\n"
         f"{priority_section}"
         "Reply:\n"
-        "1️⃣ SOLAR — detailed solar breakdown\n"
-        "2️⃣ FIXED — explain my fixed charges\n"
+        "1️⃣ SOLAR - detailed solar breakdown\n"
+        "2️⃣ FIXED - explain my fixed charges\n"
         "Or send another bill photo anytime."
     )
 
 
 # =============================================================================
-# GJ response — PRD §2.2 STEP 4b
+# GJ response - PRD §2.2 STEP 4b
 # =============================================================================
 
 
@@ -238,8 +238,8 @@ def compose_gj_response(
         + "━━━━━━━━━━━━━━━━━━━━━━━\n"
         + priority_section
         + "Reply:\n"
-        "1️⃣ SUBSIDY — how Gruha Jyothi works\n"
-        "2️⃣ CLIFF — what triggers losing subsidy\n"
+        "1️⃣ SUBSIDY - how Gruha Jyothi works\n"
+        "2️⃣ CLIFF - what triggers losing subsidy\n"
         "Or send another bill photo anytime."
     )
 
@@ -275,7 +275,7 @@ def _compose_cliff_section(gj: GJReport, ext: BillExtraction) -> str:
     headers = {
         "eligibility": "⚠️ Eligibility Cliff Warning",
         "monthly_hard": "🚨 Monthly Hard Cliff Warning",
-        "soft_step": "⚠️ Entitlement Crossed — Paying for Excess",
+        "soft_step": "⚠️ Entitlement Crossed - Paying for Excess",
         "approaching_entitlement": "⚠️ Approaching Entitlement",
     }
     header = headers.get(top.cliff, "⚠️ Gruha Jyothi Warning")
@@ -318,7 +318,7 @@ def _compose_climate_footprint_section(
     sanctioned_load_kw: float,
     is_gj: bool,
 ) -> str:
-    """Climate Footprint + Conservation Tip section — identical layout for
+    """Climate Footprint + Conservation Tip section - identical layout for
     both the non-GJ and GJ templates so users recognise it across personas.
     """
     fp = compute_annual_household_footprint(units)
@@ -341,7 +341,7 @@ def _compose_climate_footprint_section(
 def _compose_dominant_load_section(ext: BillExtraction) -> str:
     """Seasonal dominant-load inference section (Session 5.8 Commit 3).
 
-    Labelled "AI inference" for transparency — we're using a simple
+    Labelled "AI inference" for transparency - we're using a simple
     rule-based model over (load, consumption, month), NOT true NILM.
     """
     billing_end = _parse_iso_date(ext.billing_period_end)
@@ -357,7 +357,7 @@ def _compose_dominant_load_section(ext: BillExtraction) -> str:
         "━━ 🔍 Likely Dominant Load (AI inference) ━━\n"
         f"Based on your {ext.sanctioned_load_kw:.0f} kW load, "
         f"{ext.units_consumed} units, and "
-        f"{billing_end.strftime('%B')} in coastal Karnataka — "
+        f"{billing_end.strftime('%B')} in coastal Karnataka - "
         f"{result.reasoning}. "
         f"Confidence: {result.confidence}.\n\n"
         "🎯 Specific action:\n"
@@ -395,7 +395,7 @@ def _compose_solar_climate_line(system_kw: int) -> str:
 
 
 # =============================================================================
-# Error templates — PRD §2.4
+# Error templates - PRD §2.4
 # =============================================================================
 
 
@@ -461,7 +461,7 @@ def split_for_whatsapp(message: str, limit: int = WHATSAPP_MESSAGE_LIMIT) -> lis
 
 def _month_label(iso_date: Optional[str]) -> str:
     if not iso_date:
-        return "—"
+        return "-"
     try:
         from datetime import date
         d = date.fromisoformat(iso_date)
@@ -502,7 +502,7 @@ def compose_for_result_ai(result: AnalysisResult, *, language: str = "en") -> st
 
     try:
         ai_lines = ai_composer.compose_main_lines(result)
-    except Exception:  # noqa: BLE001 — never let AI break the user response
+    except Exception:  # noqa: BLE001 - never let AI break the user response
         logger.exception("ai composer raised; falling back to template")
         ai_lines = None
 
@@ -515,7 +515,7 @@ def compose_for_result_ai(result: AnalysisResult, *, language: str = "en") -> st
 
 
 # =============================================================================
-# Follow-up composers — PRD §2.3 (two-turn keyword flow)
+# Follow-up composers - PRD §2.3 (two-turn keyword flow)
 # =============================================================================
 
 
@@ -527,7 +527,7 @@ def compose_solar_followup(
 ) -> str:
     """Detailed solar breakdown per PRD §2.3 STEP 4b.
 
-    Uses the SolarROI dataclass on ``analysis`` — every number is already
+    Uses the SolarROI dataclass on ``analysis`` - every number is already
     computed during the main analyse step, no re-computation here.
     """
     roi = analysis.solar_roi
@@ -577,7 +577,7 @@ def compose_fixed_followup(
         trap_section = (
             f"⚠️ Your actual peak demand is ~{fct.estimated_peak_kw:.1f} kW, "
             f"so {fct.excess_kw:.0f} kW of your sanctioned load is unused.\n\n"
-            f"You're paying Rs. {fct.excess_monthly_cost:,.0f}/month extra — "
+            f"You're paying Rs. {fct.excess_monthly_cost:,.0f}/month extra - "
             f"Rs. {fct.excess_annual_cost:,.0f}/year.\n\n"
             f"Reducing to {fct.recommended_load_kw:.0f} kW requires a MESCOM "
             f"load-reduction application (Form 'Application for Revision of "
@@ -589,7 +589,7 @@ def compose_fixed_followup(
     else:
         trap_section = (
             f"✅ Your {sanctioned:.0f} kW sanctioned load looks "
-            f"appropriate for your consumption pattern — no trap firing "
+            f"appropriate for your consumption pattern - no trap firing "
             f"for you this month."
         )
 
@@ -600,8 +600,8 @@ def compose_fixed_followup(
         f"Your sanctioned load: {sanctioned:.0f} kW\n"
         "Fixed charge rate: Rs. 145/kW/month (KERC Tariff Order 2025)\n"
         f"This month's fixed charges: Rs. {monthly_fixed:,.0f}\n\n"
-        "Fixed charges pay for your slice of MESCOM's capacity — "
-        "transformers, wires, billing — even on months you use 0 units.\n\n"
+        "Fixed charges pay for your slice of MESCOM's capacity - "
+        "transformers, wires, billing - even on months you use 0 units.\n\n"
         + trap_section + "\n\n"
         "Source: KERC Tariff Order 2025, Annexure 2 (LT-1 Domestic).\n\n"
         "Send another bill photo for a fresh analysis."
@@ -618,7 +618,7 @@ def compose_subsidy_followup(
     gj = analysis.gj_visibility
     ai_section = f"{ai_line.context}\n\n" if ai_line else ""
     if gj is None or not gj.is_gj_beneficiary:
-        # Non-GJ user hit SUBSIDY — tell them how to enrol.
+        # Non-GJ user hit SUBSIDY - tell them how to enrol.
         return (
             "🏠 Gruha Jyothi Explained\n"
             "━━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -658,7 +658,7 @@ def compose_subsidy_followup(
         "1. Cross your entitlement → pay standard tariff for excess units\n"
         "2. Cross 200 units in any month → lose the ENTIRE month's subsidy\n"
         "3. 10-month rolling avg > 200 → lose scheme enrollment entirely\n\n"
-        "Reply CLIFF for a deeper look at cliff #2 and #3 — most "
+        "Reply CLIFF for a deeper look at cliff #2 and #3 - most "
         "beneficiaries only know #1.\n\n"
         "Send another bill photo for a fresh analysis."
     )
@@ -693,7 +693,7 @@ def compose_cliff_followup(
     # Personalised "what would it cost" cost framing.
     if units > 200:
         status = (
-            f"🚨 You used {units} units this month — OVER the 200-unit cap. "
+            f"🚨 You used {units} units this month - OVER the 200-unit cap. "
             f"You lost the entire subsidy: the full Rs. {subtotal_1:,.0f} "
             f"was payable, not just the excess."
         )
@@ -719,17 +719,17 @@ def compose_cliff_followup(
         "Most beneficiaries only know Cliff #1. #2 and #3 are the "
         "ones that really hurt.\n\n"
         f"Your status: {status}\n\n"
-        "━━ Cliff 1 — Soft Step ━━\n"
+        "━━ Cliff 1 - Soft Step ━━\n"
         f"Cross your {entitlement:.0f}-unit entitlement → pay for the "
         f"excess units only at standard tariff.\n\n"
-        "━━ Cliff 2 — Monthly Hard Cliff (200 units) ━━\n"
+        "━━ Cliff 2 - Monthly Hard Cliff (200 units) ━━\n"
         "Cross 200 units in ANY single month → lose the ENTIRE "
         "subsidy for that month. A typical Rs. 0 bill becomes "
         "Rs. 1,500-2,500.\n\n"
-        "━━ Cliff 3 — Eligibility Cliff ━━\n"
+        "━━ Cliff 3 - Eligibility Cliff ━━\n"
         "If your 10-month rolling average goes above 200 units, you "
         "lose Gruha Jyothi enrollment entirely. One low-consumption "
-        "month does NOT restore it — you re-qualify only over a "
+        "month does NOT restore it - you re-qualify only over a "
         "fresh 10-month review window.\n\n"
         "Watch summer months with AC and guest-stay months. That's "
         "where most Rs. 0 → Rs. 2,000 surprises happen.\n\n"
@@ -738,7 +738,7 @@ def compose_cliff_followup(
 
 
 def compose_followup_limit_reached_response() -> str:
-    """Sent on the 3rd follow-up — keeps judges from stress-testing loops."""
+    """Sent on the 3rd follow-up - keeps judges from stress-testing loops."""
     return (
         "You've used your follow-up questions for this bill.\n\n"
         "📸 Send another bill photo for a fresh analysis."
@@ -755,10 +755,10 @@ def compose_no_recent_bill_response() -> str:
 
 
 # =============================================================================
-# Kannada voice summary (Session 6) — ≤ 600 chars, ≈ 30-40 seconds of audio
+# Kannada voice summary (Session 6) - ≤ 600 chars, ≈ 30-40 seconds of audio
 # =============================================================================
 #
-# Native-speaker verification pending — see CLAUDE.md §11 Session 6 outstanding
+# Native-speaker verification pending - see CLAUDE.md §11 Session 6 outstanding
 # items. Pattern is Kannada script for proper nouns, numbers, and common
 # connectives; English token for technical terms we trust users already
 # recognise in English (Gemini, MESCOM, solar). This matches how Kannada
@@ -766,7 +766,7 @@ def compose_no_recent_bill_response() -> str:
 
 
 def _month_kannada(iso_date: Optional[str]) -> str:
-    """Kannada month label — falls back to English if parse fails."""
+    """Kannada month label - falls back to English if parse fails."""
     if not iso_date:
         return ""
     try:
@@ -783,7 +783,7 @@ def _month_kannada(iso_date: Optional[str]) -> str:
 
 
 def _compose_non_gj_voice(extraction: BillExtraction, analysis: AnalysisResult) -> str:
-    """Non-GJ household — lead with bill total + FCT flag if it fires, plus
+    """Non-GJ household - lead with bill total + FCT flag if it fires, plus
     solar as the headline action."""
     roi = analysis.solar_roi
     fct = analysis.fct
@@ -818,7 +818,7 @@ def _compose_non_gj_voice(extraction: BillExtraction, analysis: AnalysisResult) 
 def _compose_gj_under_entitlement_voice(
     extraction: BillExtraction, analysis: AnalysisResult,
 ) -> str:
-    """GJ beneficiary under 200 — lead with subsidy visibility + cliff
+    """GJ beneficiary under 200 - lead with subsidy visibility + cliff
     warning if close to entitlement."""
     gj = analysis.gj_visibility
     month = _month_kannada(extraction.billing_period_end)
@@ -852,14 +852,14 @@ def _compose_gj_under_entitlement_voice(
 def _compose_gj_cliff_crossed_voice(
     extraction: BillExtraction, analysis: AnalysisResult,
 ) -> str:
-    """GJ beneficiary who crossed 200 — lost subsidy for the month."""
+    """GJ beneficiary who crossed 200 - lost subsidy for the month."""
     month = _month_kannada(extraction.billing_period_end)
     units = extraction.units_consumed or 0
     full_bill = analysis.net_bill_amount
 
     return (
         f"ನಮಸ್ಕಾರ. {month} ತಿಂಗಳು ನೀವು {units} ಯೂನಿಟ್ "
-        f"ಬಳಸಿದ್ದೀರಿ — 200 ಯೂನಿಟ್ ಮಿತಿ ದಾಟಿದೆ. "
+        f"ಬಳಸಿದ್ದೀರಿ - 200 ಯೂನಿಟ್ ಮಿತಿ ದಾಟಿದೆ. "
         f"ಈ ತಿಂಗಳ ಗೃಹ ಜ್ಯೋತಿ ಸಹಾಯಧನ ಸಂಪೂರ್ಣವಾಗಿ ನಷ್ಟವಾಗಿದೆ. "
         f"ನೀವು {full_bill:,.0f} ರೂಪಾಯಿ ಪಾವತಿಸಬೇಕಾಗಿದೆ. "
         f"ಮುಂದಿನ ತಿಂಗಳು 200 ಯೂನಿಟ್ ಒಳಗೆ ಬಳಸಿ, ಸಹಾಯಧನ ಮತ್ತೆ ಸಿಗುತ್ತದೆ. "

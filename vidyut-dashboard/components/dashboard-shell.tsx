@@ -373,19 +373,19 @@ export default function DashboardShell() {
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <MetricCard
               title="Avg Bill (solar-eligible)"
-              value={metrics ? rupees(metrics.avg_non_gj_bill_rupees) : "—"}
-              note="Non-GJ households — the cohort where solar matters"
+              value={metrics ? rupees(metrics.avg_non_gj_bill_rupees) : "-"}
+              note="Non-GJ households - the cohort where solar matters"
               icon={<CircleDollarSign size={18} />}
             />
             <MetricCard
               title="Avg Bill After 3 kW Solar"
-              value={metrics ? rupees(metrics.avg_solar_bill_rupees) : "—"}
+              value={metrics ? rupees(metrics.avg_solar_bill_rupees) : "-"}
               note="Same cohort, post PM Surya Ghar install"
               icon={<Sun size={18} />}
             />
             <MetricCard
               title="Avg Monthly Savings"
-              value={metrics ? rupees(metrics.avg_monthly_solar_savings_rupees) : "—"}
+              value={metrics ? rupees(metrics.avg_monthly_solar_savings_rupees) : "-"}
               note="Per household · 3 kW system · KERC 2025 tariffs"
               icon={<BarChart3 size={18} />}
             />
@@ -394,27 +394,27 @@ export default function DashboardShell() {
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <MetricCard
               title="Consented Users"
-              value={metrics ? metrics.consented_users.toString() : "—"}
+              value={metrics ? metrics.consented_users.toString() : "-"}
               note={`${metrics?.total_bills ?? 0} bills analysed`}
               icon={<Users size={18} />}
             />
             <MetricCard
               title="Fixed Charge Trap flags"
-              value={metrics ? metrics.fct_flags_fired.toString() : "—"}
+              value={metrics ? metrics.fct_flags_fired.toString() : "-"}
               note="Households over-provisioned"
               icon={<AlertTriangle size={18} />}
               accent="terracotta"
             />
             <MetricCard
               title="GJ Subsidy Made Visible"
-              value={metrics ? rupees(metrics.gj_subsidy_visible_rupees) : "—"}
+              value={metrics ? rupees(metrics.gj_subsidy_visible_rupees) : "-"}
               note={`${metrics?.gj_bills ?? 0} Gruha Jyothi bills`}
               icon={<ShieldCheck size={18} />}
             />
             <MetricCard
               title="Annual CO2 Footprint"
               value={
-                metrics ? `${metrics.annual_co2_footprint_tonnes.toFixed(1)} t` : "—"
+                metrics ? `${metrics.annual_co2_footprint_tonnes.toFixed(1)} t` : "-"
               }
               note="Across consented households"
               icon={<Leaf size={18} />}
@@ -611,7 +611,7 @@ export default function DashboardShell() {
               <div>
                 <h2 className="font-serif text-xl font-semibold text-ink">DPDPA Compliance</h2>
                 <p className="text-sm text-ink-faint">
-                  Digital Personal Data Protection Act, 2023 — by design, not by checkbox.
+                  Digital Personal Data Protection Act, 2023 - by design, not by checkbox.
                 </p>
               </div>
               <span className="vm-chamfer hidden bg-bronze px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.11em] text-[#fff7ea] sm:inline-block">
@@ -628,7 +628,7 @@ export default function DashboardShell() {
                   Unconsented messages are never forwarded to Gemini.
                 </p>
                 <p className="mt-2 text-xs text-green-deep">
-                  {metrics ? `${metrics.consented_users} of ${metrics.total_users}` : "—"}{" "}
+                  {metrics ? `${metrics.consented_users} of ${metrics.total_users}` : "-"}{" "}
                   users consented
                 </p>
               </div>

@@ -1,4 +1,4 @@
-"""Session 5.8 Commit 2 — Enhanced Level 2 cliff warning tests."""
+"""Session 5.8 Commit 2 - Enhanced Level 2 cliff warning tests."""
 from __future__ import annotations
 
 import pytest
@@ -12,7 +12,7 @@ pytestmark = pytest.mark.smoke
 
 
 # =============================================================================
-# compute_gj_warnings — enhanced Level 2 message content
+# compute_gj_warnings - enhanced Level 2 message content
 # =============================================================================
 
 
@@ -30,7 +30,7 @@ def _find(warnings, cliff):
 
 
 class TestLevel2Red:
-    """>= 95% of 200 units — actionable RED warning."""
+    """>= 95% of 200 units - actionable RED warning."""
 
     def test_195_units_fires_red(self):
         ws = _warnings(195)
@@ -62,10 +62,10 @@ class TestLevel2Red:
 
 
 class TestLevel2Yellow:
-    """80-94% of 200 units — softer YELLOW framing."""
+    """80-94% of 200 units - softer YELLOW framing."""
 
     def test_180_units_fires_yellow(self):
-        # 180/200 = 90% — that's still >= 95%? No, 0.90 < 0.95 → YELLOW.
+        # 180/200 = 90% - that's still >= 95%? No, 0.90 < 0.95 → YELLOW.
         ws = _warnings(180)
         w = _find(ws, "monthly_hard")
         assert w is not None and w.level == "yellow"
@@ -85,7 +85,7 @@ class TestLevel2Yellow:
 
 
 class TestOver200Units:
-    """KOPPALA class — already over the cap. Different message shape."""
+    """KOPPALA class - already over the cap. Different message shape."""
 
     def test_390_units_message_says_over_cap(self):
         w = _find(_warnings(390, entitlement=63.0, subtotal=3_044.0), "monthly_hard")
@@ -93,7 +93,7 @@ class TestOver200Units:
         assert "OVER" in w.message or "over the 200-unit cap" in w.message.lower()
 
     def test_390_message_does_not_say_stay_safe(self):
-        # Already crossed — no "To stay safe" phrasing.
+        # Already crossed - no "To stay safe" phrasing.
         w = _find(_warnings(390, entitlement=63.0, subtotal=3_044.0), "monthly_hard")
         assert "stay safe" not in w.message.lower()
         assert "Cut " not in w.message   # no behavior prescription
@@ -105,7 +105,7 @@ class TestOver200Units:
 
 
 # =============================================================================
-# Response composer integration — synthetic 180-unit GJ bill
+# Response composer integration - synthetic 180-unit GJ bill
 # =============================================================================
 
 

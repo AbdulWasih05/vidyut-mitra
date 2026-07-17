@@ -1,4 +1,4 @@
-"""Smoke tests for output.infographic — Pillow-drawn summary cards."""
+"""Smoke tests for output.infographic - Pillow-drawn summary cards."""
 from __future__ import annotations
 
 import os

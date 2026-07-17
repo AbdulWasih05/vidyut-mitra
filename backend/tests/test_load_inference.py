@@ -15,7 +15,7 @@ pytestmark = pytest.mark.smoke
 
 
 # =============================================================================
-# Rule matching — persona cases
+# Rule matching - persona cases
 # =============================================================================
 
 
@@ -43,7 +43,7 @@ class TestPersonaRules:
         assert r.confidence == "high"
 
     def test_koppala_april_ac_cooling_high(self):
-        # 2 kW sanctioned, 390 units — even with modest sanctioned load,
+        # 2 kW sanctioned, 390 units - even with modest sanctioned load,
         # the summer + heavy consumption signal dominates.
         r = infer_dominant_load(2.0, 390, APRIL_2026)
         assert r.dominant_load == "ac_cooling"
@@ -62,7 +62,7 @@ class TestPersonaRules:
         assert r.confidence == "medium"
 
     def test_mixed_fallback_for_weird_inputs(self):
-        # 2 kW, 170 units, October — not in fans/lighting band (>150),
+        # 2 kW, 170 units, October - not in fans/lighting band (>150),
         # not refrigeration (load exactly 2 OK, units 170 >= 150),
         # actually refrigeration rule matches. Try different numbers that
         # genuinely don't match any rule.
@@ -72,7 +72,7 @@ class TestPersonaRules:
 
 
 # =============================================================================
-# Conservation action quantification — Nikhil and Sunita
+# Conservation action quantification - Nikhil and Sunita
 # =============================================================================
 
 

@@ -48,7 +48,7 @@ class TestHouseholdFootprint:
 
 
 # =============================================================================
-# Solar climate impact — for the scale pitch moment
+# Solar climate impact - for the scale pitch moment
 # =============================================================================
 
 
@@ -102,7 +102,7 @@ class TestConsumptionBandTip:
 
     def test_gj_above_160_gets_cliff_warning_appended(self):
         tip = generate_consumption_band_tip(170, 1.0, is_gj=True)
-        # REHENA-class case — warning should be appended.
+        # REHENA-class case - warning should be appended.
         assert "Approaching" in tip or "200-unit" in tip
 
     def test_gj_below_160_no_warning(self):
@@ -111,7 +111,7 @@ class TestConsumptionBandTip:
         assert "200-unit" not in tip
 
     def test_non_gj_never_gets_cliff_warning_appended(self):
-        # High-consumption non-GJ Sunita — shouldn't see a cliff warning.
+        # High-consumption non-GJ Sunita - shouldn't see a cliff warning.
         tip = generate_consumption_band_tip(280, 3.0, is_gj=False)
         assert "Approaching" not in tip
         assert "Gruha Jyothi cliff" not in tip

@@ -5,10 +5,10 @@ Both the WhatsApp webhook (``app.py``) and the web-fallback form
 exactly one code path.
 
 Dispatches:
-- ``tariff_engine`` — bill re-computation + Fixed Charge Trap (with the 2-kW
+- ``tariff_engine`` - bill re-computation + Fixed Charge Trap (with the 2-kW
   floor heuristic that makes Nikhil yield briefing §4's Rs. 1,740/year).
-- ``subsidy_navigator`` — PMSG + GJ Visibility (+ SWH rebate).
-- ``solar_roi`` — sizing + payback + lifetime savings + CO2.
+- ``subsidy_navigator`` - PMSG + GJ Visibility (+ SWH rebate).
+- ``solar_roi`` - sizing + payback + lifetime savings + CO2.
 
 The output dataclass flattens every field the response composer needs, so the
 composer has no dependency on any analysis module internals.
@@ -27,7 +27,7 @@ from backend.config import tariff_constants as tc
 
 
 # =============================================================================
-# Fixed Charge Trap — briefing-aligned report
+# Fixed Charge Trap - briefing-aligned report
 # =============================================================================
 
 
@@ -36,7 +36,7 @@ class FCTReport:
     """Briefing §4-aligned Fixed Charge Trap output.
 
     Uses ``tariff_engine.estimate_peak_demand`` for the peak estimate but
-    applies a 2-kW recommendation floor — this is what produces Nikhil's
+    applies a 2-kW recommendation floor - this is what produces Nikhil's
     Rs. 1,740/year pitch number (3 sanctioned - 2 recommended = 1 kW × 145
     × 12 = 1,740). Without the floor we'd report Rs. 3,770, which isn't the
     briefing-defended figure.
@@ -60,7 +60,7 @@ def _compute_fct(
     sanctioned_load_kw: float,
 ) -> FCTReport:
     estimated_peak = tariff_engine.estimate_peak_demand(units_consumed)
-    # Rule: never recommend a load below the FCT min sanctioned (2 kW) — it's
+    # Rule: never recommend a load below the FCT min sanctioned (2 kW) - it's
     # impractical for most households and not an outcome MESCOM approves.
     recommended = max(float(tc.FCT_MIN_SANCTIONED_KW), float(ceil(estimated_peak)))
     excess = round(max(0.0, sanctioned_load_kw - recommended), 2)
@@ -128,7 +128,7 @@ def _gj_report_to_dict(r: GJReport) -> dict[str, Any]:
     """GJReport includes GJWarning dataclasses in its warnings list; expand."""
     d = asdict(r)
     # asdict recursively turns dataclasses into dicts so warnings are already
-    # plain dicts at this point — no extra work.
+    # plain dicts at this point - no extra work.
     return d
 
 

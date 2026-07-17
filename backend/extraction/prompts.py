@@ -1,4 +1,4 @@
-"""Gemini extraction prompts — source: tech_spec_v1_1 §4.2 and §4.4.
+"""Gemini extraction prompts - source: tech_spec_v1_1 §4.2 and §4.4.
 
 Both prompts are versioned here rather than inlined in the client so that
 Session 2+ can iterate on prompt wording without touching call-site code.
@@ -71,7 +71,7 @@ RULES:
    - For LT-1 domestic bills: units_consumed × 5.80 should equal energy_charges (within Rs. 5)
    - subtotal_1_before_subsidy must equal the sum of energy_charges + fixed_charges + pg_surcharge + electricity_tax + fppca + other_charges (within Rs. 5)
    - For GJ bills: subtotal_1_before_subsidy - gruha_jyothi_subsidy_amount must equal net_bill_amount (within Rs. 5)
-   If any of these don't reconcile, you have misread a digit — re-examine the image and correct the offending field, or set it to null if you cannot read it confidently.
+   If any of these don't reconcile, you have misread a digit - re-examine the image and correct the offending field, or set it to null if you cannot read it confidently.
 
 Return ONLY the JSON object."""
 

@@ -1,4 +1,4 @@
-"""Structural validation for Gemini bill extractions — tech spec §4.3.
+"""Structural validation for Gemini bill extractions - tech spec §4.3.
 
 Validation is structural, not confidence-based. Gemini's self-reported
 ``extraction_confidence`` is a soft signal only.
@@ -54,7 +54,7 @@ def validate_extraction(data: dict[str, Any]) -> tuple[bool, list[str]]:
     # --- R1: MESCOM bill ---
     if not data.get("is_mescom_bill"):
         issues.append("R1: Not a MESCOM bill (is_mescom_bill is false or missing).")
-        # R1 is terminal — no point running further checks.
+        # R1 is terminal - no point running further checks.
         return False, issues
 
     # --- R2: Pre-April 2025 gate ---
@@ -62,7 +62,7 @@ def validate_extraction(data: dict[str, Any]) -> tuple[bool, list[str]]:
     earliest = date.fromisoformat(EARLIEST_ACCEPTED_BILL_DATE)
     if billing_period_end is None:
         issues.append(
-            "R2: billing_period_end is missing or not an ISO date — "
+            "R2: billing_period_end is missing or not an ISO date - "
             "cannot confirm this bill is post-April 2025."
         )
     elif billing_period_end < earliest:
@@ -72,7 +72,7 @@ def validate_extraction(data: dict[str, Any]) -> tuple[bool, list[str]]:
             f"earliest accepted={EARLIEST_ACCEPTED_BILL_DATE}). "
             f"KERC updated the tariff structure in April 2025."
         )
-        # R2 is terminal — return now.
+        # R2 is terminal - return now.
         return False, issues
 
     # --- R3: units_consumed range ---
@@ -105,7 +105,7 @@ def validate_extraction(data: dict[str, Any]) -> tuple[bool, list[str]]:
                     f"current_reading - previous_reading ({delta}) by more than "
                     f"{METER_READING_TOLERANCE_UNITS} units."
                 )
-    # If readings are missing, skip R5/R6 quietly — not all bills show readings
+    # If readings are missing, skip R5/R6 quietly - not all bills show readings
     # clearly and R3 already covers units_consumed itself.
 
     # --- R7: bill math ---
@@ -141,7 +141,7 @@ def validate_extraction(data: dict[str, Any]) -> tuple[bool, list[str]]:
             expected_net = max(0.0, subtotal_1 - gj_subsidy)
             if abs(expected_net - net_bill) > BILL_MATH_TOLERANCE_RUPEES:
                 issues.append(
-                    f"R8: GJ bill math mismatch — "
+                    f"R8: GJ bill math mismatch - "
                     f"max(0, subtotal_1 ({subtotal_1:.2f}) - gj_subsidy "
                     f"({gj_subsidy:.2f})) = {expected_net:.2f} does not match "
                     f"net_bill_amount ({net_bill:.2f}) within ±Rs. "
@@ -165,7 +165,7 @@ def validate_extraction(data: dict[str, Any]) -> tuple[bool, list[str]]:
         tolerance = max(TARIFF_SANITY_FLOOR_RUPEES, expected_energy * TARIFF_SANITY_PCT)
         if abs(expected_energy - actual_energy) > tolerance:
             issues.append(
-                f"R9: tariff sanity — units ({units}) × Rs. "
+                f"R9: tariff sanity - units ({units}) × Rs. "
                 f"{ENERGY_CHARGE_FLAT_RATE}/unit = Rs. {expected_energy:.2f} "
                 f"does not match energy_charges (Rs. {actual_energy:.2f}) "
                 f"within Rs. {tolerance:.0f}. One of the two has likely been misread."

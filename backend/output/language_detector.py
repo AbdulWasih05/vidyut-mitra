@@ -6,7 +6,7 @@ when no explicit preference has been persisted yet.
 Detection rule: any character in the Kannada Unicode block U+0C80–U+0CFF
 flips the verdict to 'kn'. Everything else (Latin, digits, emoji,
 punctuation, empty, None) is 'en'. This is deliberately permissive on the
-Kannada side — a single Kannada character in a mixed message is enough
+Kannada side - a single Kannada character in a mixed message is enough
 to assume the user reads Kannada.
 """
 from __future__ import annotations

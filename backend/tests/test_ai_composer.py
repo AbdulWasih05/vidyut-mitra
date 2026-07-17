@@ -1,6 +1,6 @@
 """Tests for the Groq-backed AI composer.
 
-The Groq client is always mocked — these tests don't make network calls.
+The Groq client is always mocked - these tests don't make network calls.
 We verify:
 - FactPack shape per persona (Nikhil/Sunita/Priya all expose the right keys)
 - Validator correctly accepts verbatim numbers and rejects paraphrased ones
@@ -51,7 +51,7 @@ def _persona_extraction(persona) -> BillExtraction:
 
 
 # =============================================================================
-# Fact-pack shape — one test per persona to lock the field contract.
+# Fact-pack shape - one test per persona to lock the field contract.
 # =============================================================================
 
 
@@ -106,7 +106,7 @@ class TestFactPackPriya:
         assert pack["uPct"] == 96
 
     def test_buffer_is_5_units(self, pack):
-        # Priya at 110/115 — soft step is closer (5 units to entitlement)
+        # Priya at 110/115 - soft step is closer (5 units to entitlement)
         # than the 200-unit hard cap (90 units away).
         assert pack["buf"] == 5
         assert pack["bk"] == "soft"
@@ -117,7 +117,7 @@ class TestFactPackPriya:
         assert pack["warn"] == "approaching_entitlement"
 
     def test_fct_does_not_fire(self, pack):
-        # 2 kW sanctioned, peak under threshold — FCT must not fire.
+        # 2 kW sanctioned, peak under threshold - FCT must not fire.
         assert "fc" not in pack
 
 
@@ -208,8 +208,8 @@ class TestValidator:
 
     def test_allows_trivial_numbers(self):
         pack = {"u": 210}
-        # "1" and "2" are list/count nouns — not factual claims.
-        text = "👉 1 quick fix — reduce to 2 kW for 210 units."
+        # "1" and "2" are list/count nouns - not factual claims.
+        text = "👉 1 quick fix - reduce to 2 kW for 210 units."
         assert validate_ai_output(text, pack) is True
 
     def test_accepts_decimal_match(self):
@@ -218,7 +218,7 @@ class TestValidator:
         assert validate_ai_output(text, pack) is True
 
     def test_accepts_floor_form_of_decimal(self):
-        # subM = 1080.02 — AI may write "Rs. 1,080" (floor). Allow.
+        # subM = 1080.02 - AI may write "Rs. 1,080" (floor). Allow.
         pack = {"subM": 1080.02}
         text = "👉 Subsidy: Rs. 1,080 this month."
         assert validate_ai_output(text, pack) is True
@@ -228,18 +228,18 @@ class TestValidator:
         '0' used to be in the trivial-numbers whitelist; removing it forces
         the AI to use real factpack values for zero claims too."""
         pack = {"u": 170, "ent": 200, "buf": 30}  # 30 buffer remaining
-        text = "🚨 0 unit buffer — subsidy at risk!"
+        text = "🚨 0 unit buffer - subsidy at risk!"
         assert validate_ai_output(text, pack) is False
 
     def test_accepts_zero_when_factpack_has_zero(self):
         """Priya-class users have b=0 (zero net bill). AI saying "Rs. 0" must pass."""
         pack = {"u": 110, "b": 0, "subM": 1080.02}
-        text = "👉 Rs. 0 paid this month — Karnataka covered Rs. 1,080.02."
+        text = "👉 Rs. 0 paid this month - Karnataka covered Rs. 1,080.02."
         assert validate_ai_output(text, pack) is True
 
 
 # =============================================================================
-# Public API — happy path + every failure mode falls back to None.
+# Public API - happy path + every failure mode falls back to None.
 # =============================================================================
 
 

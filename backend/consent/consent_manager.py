@@ -54,16 +54,16 @@ class ConsentResponse:
 
 
 # =============================================================================
-# User-facing templates — PRD §2.1 STEP 1-2 + §2.4. Kannada included verbatim.
+# User-facing templates - PRD §2.1 STEP 1-2 + §2.4. Kannada included verbatim.
 # =============================================================================
 
 FIRST_CONTACT_TEMPLATE = (
-    "🔌 VidyutMitra — MESCOM Bill Advisor\n\n"
+    "🔌 VidyutMitra - MESCOM Bill Advisor\n\n"
     "Welcome! I help you understand your MESCOM electricity bill, find "
     "savings, and check government subsidy eligibility.\n\n"
     "🔒 Privacy Notice / ಗೌಪ್ಯತೆ ಸೂಚನೆ:\n"
     "• I extract data from your bill photo (units, charges, sanctioned load)\n"
-    "• I store ONLY extracted text data — your bill image is NEVER saved\n"
+    "• I store ONLY extracted text data - your bill image is NEVER saved\n"
     "• Your data is linked to your phone number\n"
     "• Send STOP at any time to permanently delete all your data\n\n"
     "ನಿಮ್ಮ ಬಿಲ್ ಫೋಟೋದಿಂದ ಮಾಹಿತಿ ಮಾತ್ರ ತೆಗೆಯಲಾಗುತ್ತದೆ. "
@@ -80,7 +80,7 @@ START_ACK_TEMPLATE = (
 )
 
 ALREADY_CONSENTED_TEMPLATE = (
-    "You're already set up — send a MESCOM bill photo anytime.\n\n"
+    "You're already set up - send a MESCOM bill photo anytime.\n\n"
     "📸 ನಿಮ್ಮ MESCOM ವಿದ್ಯುತ್ ಬಿಲ್ ಫೋಟೋ ಕಳುಹಿಸಿ."
 )
 
@@ -91,7 +91,7 @@ STOP_CONSENTED_TEMPLATE = (
 )
 
 STOP_NEVER_CONSENTED_TEMPLATE = (
-    "Understood — no data was ever processed. Feel free to return anytime.\n\n"
+    "Understood - no data was ever processed. Feel free to return anytime.\n\n"
     "ಯಾವುದೇ ಡೇಟಾ ಸಂಸ್ಕರಿಸಲಾಗಿಲ್ಲ. ನೀವು ಯಾವಾಗ ಬೇಕಾದರೂ ಹಿಂತಿರುಗಬಹುದು."
 )
 
@@ -160,7 +160,7 @@ def handle_start_command(
     *,
     client: Optional[Any] = None,
 ) -> ConsentResponse:
-    """User sent START — transition to CONSENTED, return the ack template.
+    """User sent START - transition to CONSENTED, return the ack template.
 
     Idempotent: calling START on an already-consented user returns the
     friendlier ``ALREADY_CONSENTED_TEMPLATE`` without a redundant DB write.
@@ -196,7 +196,7 @@ def handle_stop_command(
     *,
     client: Optional[Any] = None,
 ) -> ConsentResponse:
-    """User sent STOP — hard-delete the user + cascade bills.
+    """User sent STOP - hard-delete the user + cascade bills.
 
     Two message variants per PRD §2.4:
     - Consented user: confirmation with bill count removed.
@@ -206,7 +206,7 @@ def handle_stop_command(
     Also nukes the in-memory follow-up cache so SOLAR/CLIFF replies after
     STOP can't leak a previously-analysed bill.
     """
-    # Late import — consent package loads before output package.
+    # Late import - consent package loads before output package.
     from backend.output import last_bill_cache
     last_bill_cache.clear_bill(phone_number)
 
@@ -252,10 +252,10 @@ def first_contact_response(
     """Handle any message from an unconsented user.
 
     Ensures the placeholder user row exists so follow-up STOP can delete it.
-    Never processes media — the image is not fetched from Twilio.
+    Never processes media - the image is not fetched from Twilio.
 
     If ``message_body`` is provided, detects the language from it and
-    persists the preference. This is best-effort — a Supabase outage falls
+    persists the preference. This is best-effort - a Supabase outage falls
     back to the in-memory consent map and skips persistence; the next
     response will re-detect.
     """
@@ -293,12 +293,12 @@ def handle_language_toggle(
     *,
     client: Optional[Any] = None,
 ) -> ConsentResponse:
-    """User sent LANG / LANGUAGE — flip persisted preference and confirm in
+    """User sent LANG / LANGUAGE - flip persisted preference and confirm in
     the NEW language.
 
     If the user has no row yet (NEVER_CONTACTED), route to first_contact_
     response so they hit the consent flow first. The language switch happens
-    against an unconsented placeholder otherwise, which is fine — the row
+    against an unconsented placeholder otherwise, which is fine - the row
     exists for STOP to delete, and the toggle still works.
     """
     from backend.output.language_detector import LANG_KN, toggle_language
@@ -353,7 +353,7 @@ def set_language_preference(
     try:
         supabase_client.set_language_preference(phone_number, language, client=client)
     except ValueError:
-        # Validation error — propagate; this is a programmer bug, not a
+        # Validation error - propagate; this is a programmer bug, not a
         # transient outage.
         raise
     except Exception as exc:  # noqa: BLE001

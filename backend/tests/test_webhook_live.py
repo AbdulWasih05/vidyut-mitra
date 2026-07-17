@@ -1,8 +1,8 @@
-"""Live webhook integration tests — require a real Supabase project.
+"""Live webhook integration tests - require a real Supabase project.
 
 Skipped by default. Run with ``pytest -v -m integration`` after setting
 ``SUPABASE_URL`` and ``SUPABASE_KEY`` in ``.env`` and applying
-``db/schema.sql`` via ``scripts/init_supabase.py`` (Session 4 addendum — not
+``db/schema.sql`` via ``scripts/init_supabase.py`` (Session 4 addendum - not
 built yet, run the SQL manually in the Supabase SQL editor for now).
 
 These tests mutate the real ``users`` / ``bills`` tables. Use a dedicated
@@ -64,7 +64,7 @@ def test_start_sets_consent_in_supabase(webhook_client, scratch_phone):
         assert r.status_code == 200
         assert check_consent(scratch_phone) is ConsentState.CONSENTED
     finally:
-        # Teardown — never leave test rows behind.
+        # Teardown - never leave test rows behind.
         supabase_client.delete_user_cascade(scratch_phone)
 
 

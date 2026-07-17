@@ -1,7 +1,7 @@
-"""Solar ROI Calculator — system sizing, payback, lifetime, CO2.
+"""Solar ROI Calculator - system sizing, payback, lifetime, CO2.
 
 Source: tech spec §8. Nikhil's worked example in briefing §4 is the test
-oracle — ``compute_roi(3, 210, False)`` must produce:
+oracle - ``compute_roi(3, 210, False)`` must produce:
 
 - ``payback_months == 45``
 - ``lifetime_net_savings_flat`` within Rs. 1,000 of Rs. 4,31,126
@@ -35,7 +35,7 @@ def size_system(
     Heuristic: `ceil(annual_kWh / specific_yield)`, capped at 3 kW
     (hackathon scope + PMSG subsidy ceiling). If the caller supplies the
     sanctioned load and the sized system is strictly smaller, bump up to
-    min(sanctioned, 3) — this matches tech spec §8.2's "sized to sanctioned
+    min(sanctioned, 3) - this matches tech spec §8.2's "sized to sanctioned
     load to maximize subsidy" note for Nikhil.
     """
     if annual_consumption_kwh <= 0:
@@ -47,7 +47,7 @@ def size_system(
 
 
 # =============================================================================
-# Financial components — per-month figures for a given consumption profile
+# Financial components - per-month figures for a given consumption profile
 # =============================================================================
 
 
@@ -98,7 +98,7 @@ class SolarROI:
     payback_months: int
     payback_years: float
 
-    # 25-year lifetime (flat tariffs — conservative pitch number)
+    # 25-year lifetime (flat tariffs - conservative pitch number)
     lifetime_gross_savings_flat: float
     lifetime_net_savings_flat: float
 
@@ -160,7 +160,7 @@ def compute_roi(
     """Full Solar ROI analysis.
 
     For GJ beneficiaries under entitlement, returns a ``not_recommended``
-    result with reasoning per tech spec §8.7 — the honest outcome the pitch
+    result with reasoning per tech spec §8.7 - the honest outcome the pitch
     commits to surfacing rather than hiding.
     """
     # --- Costs ---
@@ -205,7 +205,7 @@ def compute_roi(
             "Your grid electricity is effectively free under Gruha Jyothi. "
             "Solar displaces something you aren't paying for, making the "
             "investment much slower to pay back. Consider solar when you're "
-            "approaching the three-level cliff — monthly consumption trending "
+            "approaching the three-level cliff - monthly consumption trending "
             "toward 200, 10-month average approaching 200, or already paying "
             "for excess units above your entitlement."
         )
@@ -217,7 +217,7 @@ def compute_roi(
         reason = (
             "Full bill liability with clear ROI case."
             if not is_gj_beneficiary
-            else "You're already over Gruha Jyothi entitlement — solar has real value here."
+            else "You're already over Gruha Jyothi entitlement - solar has real value here."
         )
 
     return SolarROI(

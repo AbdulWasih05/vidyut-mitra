@@ -1,10 +1,10 @@
 """End-to-end persona assertions (Nikhil, Sunita, Priya) + synthetic bills.
 
 Covers the three demo choreography moments:
-- Nikhil: solar ROI hero math — 45-month payback, Rs. 4.31 lakh lifetime,
+- Nikhil: solar ROI hero math - 45-month payback, Rs. 4.31 lakh lifetime,
   2.98 tonnes CO2/year (briefing §4 worked example, byte-for-byte).
 - Sunita: higher consumption → faster payback, ~Rs. 2,260 monthly benefit.
-- Priya: GJ Visibility — Level 0 approaching RED fires at 110/115, solar
+- Priya: GJ Visibility - Level 0 approaching RED fires at 110/115, solar
   is "not_recommended" because she's under entitlement.
 
 Plus synthetic edge-case bills seen in the wild:
@@ -137,12 +137,12 @@ def test_priya_fct_does_not_fire():
 
 
 # =============================================================================
-# Gruha Jyothi Visibility (Session 3 — UNSKIPPED)
+# Gruha Jyothi Visibility (Session 3 - UNSKIPPED)
 # =============================================================================
 
 
 class TestPriyaGJVisibility:
-    """Priya at 110/115 = 95.7% — the demo moment for Level 0 approaching."""
+    """Priya at 110/115 = 95.7% - the demo moment for Level 0 approaching."""
 
     @pytest.fixture
     def gj_report(self):
@@ -164,7 +164,7 @@ class TestPriyaGJVisibility:
         assert gj_report.cliffs["monthly_hard"]["triggered"] is False
 
     def test_fires_red_approaching_entitlement_warning(self, gj_report):
-        """Level 0 is load-bearing — without it, Priya fires nothing."""
+        """Level 0 is load-bearing - without it, Priya fires nothing."""
         assert gj_report.overall_risk == "red"
         approaching = [
             w for w in gj_report.warnings if w.cliff == "approaching_entitlement"
@@ -186,12 +186,12 @@ class TestNonGJPersonasHaveNoGJOutput:
 
 
 # =============================================================================
-# Synthetic edge-case bills — KOPPALA + REHENA classes
+# Synthetic edge-case bills - KOPPALA + REHENA classes
 # =============================================================================
 
 
 class TestKoppalaClassHardCliff:
-    """390 units / 63 entitlement / 0 subsidised units — crossed the 200-unit
+    """390 units / 63 entitlement / 0 subsidised units - crossed the 200-unit
     cliff. Level 2 monthly hard cliff RED warning must fire; eligibility and
     approaching warnings likely fire too (depending on trailing average).
     """
@@ -221,7 +221,7 @@ class TestKoppalaClassHardCliff:
 
 
 class TestRehenaClassSoftStep:
-    """170 units / 123 entitlement — crossed personal entitlement but still
+    """170 units / 123 entitlement - crossed personal entitlement but still
     under the 200-unit hard cliff. Level 1 soft step fires; approaching
     warning fires too (presence, not colour, is what matters).
     """
@@ -243,7 +243,7 @@ class TestRehenaClassSoftStep:
             trailing_10m_avg=None,
             hypothetical_full_bill=1_344.0,
         )
-        # 170 / 123 = 138 % — well above the 90 % Level 0 threshold, so
+        # 170 / 123 = 138 % - well above the 90 % Level 0 threshold, so
         # approaching fires. Colour is RED under pure threshold math; we
         # check presence to stay robust to a future "downgrade once over"
         # product tweak.
@@ -265,12 +265,12 @@ class TestRehenaClassSoftStep:
 
 
 # =============================================================================
-# Solar ROI — Nikhil hero math (briefing §4)
+# Solar ROI - Nikhil hero math (briefing §4)
 # =============================================================================
 
 
 class TestNikhilSolarROI:
-    """Briefing §4 worked example is the oracle — every number here is
+    """Briefing §4 worked example is the oracle - every number here is
     defensible at pitch time."""
 
     @pytest.fixture
@@ -319,7 +319,7 @@ class TestNikhilSolarROI:
 
 
 # =============================================================================
-# Solar ROI — Sunita (higher consumption → faster payback)
+# Solar ROI - Sunita (higher consumption → faster payback)
 # =============================================================================
 
 
@@ -338,7 +338,7 @@ class TestSunitaSolarROI:
         assert roi.total_monthly_benefit == pytest.approx(2_260, abs=5)
 
     def test_payback_is_about_38_39_months(self, roi):
-        # 87,000 / 2,259.56 = 38.5 — rounds to 38 or 39 depending on method.
+        # 87,000 / 2,259.56 = 38.5 - rounds to 38 or 39 depending on method.
         assert 38 <= roi.payback_months <= 39
 
     def test_payback_years_is_about_3_2(self, roi):
@@ -350,7 +350,7 @@ class TestSunitaSolarROI:
 
 
 # =============================================================================
-# Solar ROI — Priya (GJ under entitlement → not recommended)
+# Solar ROI - Priya (GJ under entitlement → not recommended)
 # =============================================================================
 
 
@@ -374,7 +374,7 @@ class TestPriyaSolarROI:
 
 
 # =============================================================================
-# PM Surya Ghar eligibility — spot checks
+# PM Surya Ghar eligibility - spot checks
 # =============================================================================
 
 
@@ -399,7 +399,7 @@ class TestPMSuryaGhar:
 
 
 # =============================================================================
-# System sizing — briefing §4 and tech-spec §8.2 worked examples
+# System sizing - briefing §4 and tech-spec §8.2 worked examples
 # =============================================================================
 
 
@@ -420,5 +420,5 @@ class TestSizeSystem:
         assert size_system(0) == 0
 
     def test_caps_at_3(self):
-        # Very high consumption — cap is the subsidy ceiling.
+        # Very high consumption - cap is the subsidy ceiling.
         assert size_system(10_000 * 12) == 3

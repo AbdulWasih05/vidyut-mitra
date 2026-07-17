@@ -2,25 +2,25 @@
 
 Session 6 priority 1 surface. Three functions:
 
-- ``init_tts_client`` — validates SARVAM_API_KEY is set. Returns a config
+- ``init_tts_client`` - validates SARVAM_API_KEY is set. Returns a config
   dict (no long-lived client object; Sarvam is stateless REST).
-- ``synthesize_kannada(text, voice)`` — OPUS audio bytes via Sarvam REST
+- ``synthesize_kannada(text, voice)`` - OPUS audio bytes via Sarvam REST
   endpoint. Falls back from primary speaker → secondary if the first call
   fails.
-- ``synthesize_to_temp_file(text)`` — writes the OPUS bytes to a unique temp
+- ``synthesize_to_temp_file(text)`` - writes the OPUS bytes to a unique temp
   path under ``MEDIA_TMP_DIR`` and returns the filesystem path. Flask's
   ``/media/<filename>`` route serves it so Twilio's CDN can fetch it during
   ``client.messages.create(media_url=[...])``. The caller is responsible for
   cleanup (see ``cleanup_media_file``).
 
 DPDPA note (CLAUDE.md §3 Rule 2): temp files are audio OUTPUT (not inbound
-consumer data) and live only briefly — Twilio downloads them synchronously
+consumer data) and live only briefly - Twilio downloads them synchronously
 during message creation, so we unlink right after dispatch. Nothing is
 persisted across requests.
 
 Why Sarvam over Google Cloud TTS: Sarvam Bulbul v3 is purpose-built for
 Indian languages with native Indian prosody. Better Kannada pronunciation
-than Western-trained WaveNet models. Also, no billing account required —
+than Western-trained WaveNet models. Also, no billing account required -
 free tier covers hackathon usage.
 """
 from __future__ import annotations
@@ -50,7 +50,7 @@ DEFAULT_VOICE = "neha"
 FALLBACK_VOICE = "priya"
 
 # Audio codec: opus (OGG/Opus) plays natively as WhatsApp voice note.
-# Sarvam's parameter is `output_audio_codec` (NOT `audio_format` — that key
+# Sarvam's parameter is `output_audio_codec` (NOT `audio_format` - that key
 # is silently ignored and Sarvam returns WAV by default, which WhatsApp
 # rejects with Twilio error 63021). Accepted values: wav, mp3, opus,
 # linear16, mulaw, alaw, flac, aac.
@@ -227,7 +227,7 @@ def synthesize_kannada(
         raise SarvamError(f"Sarvam audio base64 decode failed: {e}") from e
 
     if len(audio_bytes) < 500:
-        # Sanity guard — under 500 bytes almost certainly indicates an
+        # Sanity guard - under 500 bytes almost certainly indicates an
         # empty or malformed response, not real audio.
         if not _already_fell_back and voice == DEFAULT_VOICE:
             logger.warning(
@@ -272,7 +272,7 @@ def synthesize_to_temp_file(
 
 
 def cleanup_media_file(path: str) -> None:
-    """Best-effort unlink. Never raises — the temp dir is ephemeral anyway."""
+    """Best-effort unlink. Never raises - the temp dir is ephemeral anyway."""
     try:
         os.unlink(path)
     except OSError as e:

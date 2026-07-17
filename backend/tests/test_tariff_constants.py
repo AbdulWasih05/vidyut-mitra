@@ -1,7 +1,7 @@
 """Smoke tests for verified KERC / MNRE / CEA / GoK constants.
 
 Every value here is load-bearing for the pitch. A change that breaks one of
-these assertions is almost always a regression, not an improvement — flag to
+these assertions is almost always a regression, not an improvement - flag to
 Wasih before editing ``config/tariff_constants.py`` to match.
 
 Run: ``pytest -v -m smoke``.
@@ -96,13 +96,13 @@ class TestPMSGSubsidy:
         assert tc.PMSG_SUBSIDY_CAP == 78_000
 
     def test_3_kw_subsidy_composition(self):
-        # 2 × 30,000 + 1 × 18,000 = 78,000 — briefing §3 matches cap.
+        # 2 × 30,000 + 1 × 18,000 = 78,000 - briefing §3 matches cap.
         three_kw = 2 * tc.PMSG_SUBSIDY_FIRST_2_KW_PER_KW + tc.PMSG_SUBSIDY_3RD_KW
         assert three_kw == tc.PMSG_SUBSIDY_CAP == 78_000
 
 
 # =============================================================================
-# Solar ROI — Mangalore constants
+# Solar ROI - Mangalore constants
 # =============================================================================
 
 
@@ -121,7 +121,7 @@ class TestSolarROI:
 
 
 # =============================================================================
-# Environmental — emission factor and derived figures
+# Environmental - emission factor and derived figures
 # Critical: CEA v21.0 value, NOT v20.0's 0.727 or the pre-2024 ~0.82.
 # =============================================================================
 
@@ -158,13 +158,13 @@ class TestEnvironmental:
 
 
 # =============================================================================
-# Gruha Jyothi — entitlement formula and cliff warning thresholds
+# Gruha Jyothi - entitlement formula and cliff warning thresholds
 # =============================================================================
 
 
 class TestGruhaJyothi:
     def test_flat_bonus_is_10_units(self):
-        # Karnataka Cabinet 18-Jan-2024 — switched from avg×1.10 to avg+10.
+        # Karnataka Cabinet 18-Jan-2024 - switched from avg×1.10 to avg+10.
         assert tc.GJ_ENTITLEMENT_FLAT_BONUS_UNITS == 10
 
     def test_entitlement_cap_is_200_units(self):
@@ -185,7 +185,7 @@ class TestGruhaJyothi:
         )
         assert entitlement == 115
 
-    # --- Level 0 — approaching entitlement (proactive) ---
+    # --- Level 0 - approaching entitlement (proactive) ---
 
     def test_approaching_entitlement_thresholds(self):
         assert tc.GJ_APPROACHING_YELLOW_THRESHOLD == pytest.approx(0.75)
@@ -197,7 +197,7 @@ class TestGruhaJyothi:
         assert util >= tc.GJ_APPROACHING_RED_THRESHOLD
 
     def test_level_0_prevents_dead_demo_moment(self):
-        # Without Level 0, Priya fires nothing — confirm Level 0 catches her.
+        # Without Level 0, Priya fires nothing - confirm Level 0 catches her.
         units, entitlement = 110, 115
         util = units / entitlement
         hard_cap_util = units / tc.GJ_MONTHLY_HARD_CLIFF_UNITS  # 110/200 = 0.55
@@ -210,13 +210,13 @@ class TestGruhaJyothi:
         # Level 0 SHOULD fire red.
         assert util >= tc.GJ_APPROACHING_RED_THRESHOLD
 
-    # --- Level 2 — monthly hard cliff ---
+    # --- Level 2 - monthly hard cliff ---
 
     def test_hard_cap_thresholds(self):
         assert tc.GJ_HARD_CAP_YELLOW_THRESHOLD == pytest.approx(0.80)
         assert tc.GJ_HARD_CAP_RED_THRESHOLD == pytest.approx(0.95)
 
-    # --- Level 3 — eligibility cliff ---
+    # --- Level 3 - eligibility cliff ---
 
     def test_eligibility_thresholds(self):
         assert tc.GJ_ELIGIBILITY_YELLOW_THRESHOLD == pytest.approx(0.80)

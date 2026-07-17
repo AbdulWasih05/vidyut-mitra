@@ -11,8 +11,8 @@ through ``whatsapp:+91DEMO000040`` and 30-80 bills per the distribution below:
 Every seed row carries ``analysis_result._seed_data = true`` so
 ``scripts/clean_demo_data.py`` can wipe it cleanly before demo day.
 
-Every number comes from the real analysis modules — tariff_engine +
-subsidy_navigator + solar_roi + orchestrator — not fabricated. If a single
+Every number comes from the real analysis modules - tariff_engine +
+subsidy_navigator + solar_roi + orchestrator - not fabricated. If a single
 seed row's math looks wrong, it's a module bug, not a seed bug.
 
 Usage::

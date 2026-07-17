@@ -6,12 +6,12 @@ bill they JUST sent so we can deep-dive into one section.
 
 **Not images, not PII beyond what's already in DB-bound fields.** Entries
 store only the ``BillExtraction`` + ``AnalysisResult`` that the analysis
-pipeline already produced — raw bill image bytes never reach this module.
+pipeline already produced - raw bill image bytes never reach this module.
 Per CLAUDE.md §3 Rule 2, no ``open(..., 'wb')`` call exists here and
 nothing is written to disk.
 
 TTL: 30 minutes. After that the entry is considered stale and ``get_last_bill``
-returns ``None`` — judges shouldn't be able to fire "CLIFF" a day later and
+returns ``None`` - judges shouldn't be able to fire "CLIFF" a day later and
 get an answer tied to yesterday's bill.
 
 Supabase migration for this cache is planned for Session 7 once we need
@@ -72,7 +72,7 @@ def get_last_bill(phone_number: str) -> Optional[dict[str, Any]]:
         if entry is None:
             return None
         if _now() - entry.cached_at > CACHE_TTL:
-            # Expired — proactively evict so we don't keep stale data around.
+            # Expired - proactively evict so we don't keep stale data around.
             del _LAST_BILL_CACHE[phone_number]
             return None
         return {
@@ -100,6 +100,6 @@ def clear_bill(phone_number: str) -> None:
 
 
 def _reset_for_tests() -> None:
-    """Clear the entire cache — test fixtures only."""
+    """Clear the entire cache - test fixtures only."""
     with _LOCK:
         _LAST_BILL_CACHE.clear()

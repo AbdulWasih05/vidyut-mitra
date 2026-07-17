@@ -78,7 +78,7 @@ def _rehena_extraction() -> BillExtraction:
 
 
 # =============================================================================
-# Nikhil — Fixed Charge Trap + PMSG + 45-month payback hero
+# Nikhil - Fixed Charge Trap + PMSG + 45-month payback hero
 # =============================================================================
 
 
@@ -117,7 +117,7 @@ class TestNikhil:
 
 
 # =============================================================================
-# Sunita — solar hero, faster payback
+# Sunita - solar hero, faster payback
 # =============================================================================
 
 
@@ -142,7 +142,7 @@ class TestSunita:
 
 
 # =============================================================================
-# Priya — GJ Level 0 approaching RED, solar not recommended
+# Priya - GJ Level 0 approaching RED, solar not recommended
 # =============================================================================
 
 
@@ -175,7 +175,7 @@ class TestPriya:
 
 
 # =============================================================================
-# KOPPALA — crossed 200 units, Level 2 hard cliff
+# KOPPALA - crossed 200 units, Level 2 hard cliff
 # =============================================================================
 
 
@@ -204,7 +204,7 @@ class TestKoppala:
 
 
 # =============================================================================
-# REHENA — between entitlement and 200, Level 1 soft step + Level 2 YELLOW
+# REHENA - between entitlement and 200, Level 1 soft step + Level 2 YELLOW
 # =============================================================================
 
 
@@ -233,7 +233,7 @@ class TestRehena:
 
 
 # =============================================================================
-# JSONB serialisation — write_bill accepts analysis.to_jsonable() without
+# JSONB serialisation - write_bill accepts analysis.to_jsonable() without
 # tripping the DPDPA forbidden-field guards.
 # =============================================================================
 

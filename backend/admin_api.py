@@ -2,11 +2,11 @@
 
 Three read-only endpoints:
 
-- ``GET /admin/metrics`` — aggregate rollups (consented users, bill count,
+- ``GET /admin/metrics`` - aggregate rollups (consented users, bill count,
   avg bill, FCT flags, GJ subsidy total, CO2 footprint, cliff counts).
-- ``GET /admin/activity`` — recent 10 bills, anonymised. NO phone_number,
-  NO consumer_name — we surface a synthetic ``log_id`` instead.
-- ``GET /admin/trend`` — last-8 daily buckets of avg bill + estimated solar
+- ``GET /admin/activity`` - recent 10 bills, anonymised. NO phone_number,
+  NO consumer_name - we surface a synthetic ``log_id`` instead.
+- ``GET /admin/trend`` - last-8 daily buckets of avg bill + estimated solar
   equivalent for the Current-vs-Solar line chart on the dashboard.
 
 Auth: every request must present ``Authorization: Bearer <ADMIN_PASSWORD>``.
@@ -17,7 +17,7 @@ For production, set ``ADMIN_DASHBOARD_ORIGIN`` to the deployed URL.
 
 DPDPA (CLAUDE.md §3 Rule 2 + tech spec §9.5): every query here is COUNT /
 AVG / SUM / anonymised-projection. No route returns ``phone_number``,
-``consumer_name``, or ``rr_number``. Code review enforces this — if you
+``consumer_name``, or ``rr_number``. Code review enforces this - if you
 find yourself typing ``phone_number`` in a select, stop.
 """
 from __future__ import annotations
@@ -83,7 +83,7 @@ def _after(response):
 def _require_admin(view):
     @wraps(view)
     def wrapped(*args, **kwargs):
-        # OPTIONS preflight — let it through for CORS.
+        # OPTIONS preflight - let it through for CORS.
         if request.method == "OPTIONS":
             return ("", 204)
 
@@ -104,7 +104,7 @@ def _require_admin(view):
 
 
 # =============================================================================
-# Supabase query helpers — aggregate only
+# Supabase query helpers - aggregate only
 # =============================================================================
 
 
@@ -175,7 +175,7 @@ def metrics():
     # Three headline solar metrics scoped to the SAME cohort: non-GJ
     # households. Mixing GJ (Rs. 0 net bills) into the "avg bill" baseline
     # while computing savings only from non-GJ bills gives negative deltas
-    # that clamp to 0 — the user-visible "solar-replaced bill shows 0" bug.
+    # that clamp to 0 - the user-visible "solar-replaced bill shows 0" bug.
     non_gj = [b for b in bills if not b.get("is_gj_beneficiary")]
     non_gj_bills_net = [b.get("net_bill_amount") or 0 for b in non_gj]
     avg_non_gj_bill = (sum(non_gj_bills_net) / len(non_gj)) if non_gj else 0
@@ -196,7 +196,7 @@ def metrics():
     )
     avg_monthly_solar_benefit = avg_non_gj_bill - avg_solar_bill
 
-    # Global avg bill across ALL bills — shown lower in the second row, not
+    # Global avg bill across ALL bills - shown lower in the second row, not
     # in the solar comparison triplet. Kept for dashboard context.
     net_bills = [b.get("net_bill_amount") or 0 for b in bills]
     avg_bill = (sum(net_bills) / total_bills) if total_bills else 0
@@ -217,7 +217,7 @@ def metrics():
         and (b.get("units_consumed") or 0) > 200
     )
 
-    # GJ subsidy visible — "government paid on your behalf" total.
+    # GJ subsidy visible - "government paid on your behalf" total.
     gj_subsidy_total = sum(
         (b.get("gj_subsidy_amount") or 0)
         for b in bills
@@ -372,5 +372,5 @@ def _parse_iso(ts: str) -> datetime:
 
 def _short_time(ts: str | None) -> str:
     if not ts:
-        return "—"
+        return "-"
     return ts.replace("T", " ")[:16]

@@ -59,13 +59,13 @@ def test_health_returns_ok(client):
 
 
 # =============================================================================
-# STOP — intercepted before consent check, even for never-consented users
+# STOP - intercepted before consent check, even for never-consented users
 # =============================================================================
 
 
 def test_stop_works_for_never_consented(client):
     with patch("backend.app.handle_stop_command", return_value=_stub_response(
-        "Understood — no data was ever processed.",
+        "Understood - no data was ever processed.",
         state=ConsentState.NEVER_CONTACTED, allow=False,
     )) as stop_mock, \
         patch("backend.app.check_consent") as consent_mock:
@@ -73,13 +73,13 @@ def test_stop_works_for_never_consented(client):
     assert r.status_code == 200
     assert b"no data was ever processed" in r.data
     stop_mock.assert_called_once()
-    # Consent check should never even run — STOP is unconditional.
+    # Consent check should never even run - STOP is unconditional.
     consent_mock.assert_not_called()
 
 
 def test_stop_lowercase_also_works(client):
     with patch("backend.app.handle_stop_command", return_value=_stub_response(
-        "Understood — no data was ever processed.",
+        "Understood - no data was ever processed.",
         state=ConsentState.NEVER_CONTACTED, allow=False,
     )) as stop_mock:
         _post(client, body="stop")
@@ -87,7 +87,7 @@ def test_stop_lowercase_also_works(client):
 
 
 # =============================================================================
-# START — transitions user to CONSENTED
+# START - transitions user to CONSENTED
 # =============================================================================
 
 
@@ -102,7 +102,7 @@ def test_start_triggers_consent_handler(client):
 
 
 # =============================================================================
-# Consent gate — unconsented user sending media gets rejected, no extraction
+# Consent gate - unconsented user sending media gets rejected, no extraction
 # =============================================================================
 
 
@@ -151,7 +151,7 @@ def test_consented_user_with_media_gets_analyzing_ack(client):
     assert r.status_code == 200
     assert b"Analyzing" in r.data or b"analyz" in r.data.lower()
     # The async worker is called (in a thread) with the right arguments.
-    # We can't directly assert it ran — the thread is daemon. But we can
+    # We can't directly assert it ran - the thread is daemon. But we can
     # assert the webhook handler referenced the function by patching it
     # at module level; a daemon thread would have called it.
     # (Threading is hard to assert deterministically; this test documents
@@ -159,7 +159,7 @@ def test_consented_user_with_media_gets_analyzing_ack(client):
 
 
 def test_process_bill_and_dispatch_happy_path():
-    """Exercise the sync processor directly — mock all external deps."""
+    """Exercise the sync processor directly - mock all external deps."""
     from backend.app import process_bill_and_dispatch
 
     # Build a real extraction + analysis for Nikhil.
@@ -206,7 +206,7 @@ def test_process_bill_and_dispatch_happy_path():
     concatenated = "\n".join(m[1] for m in sent_messages)
     assert "Fixed Charge Alert" in concatenated
     assert "1,740" in concatenated
-    # Supabase write happens AFTER dispatch — user gets their answer even
+    # Supabase write happens AFTER dispatch - user gets their answer even
     # if DB is down.
     write_bill_mock.assert_called_once()
     assert msg == "\n".join(m[1] for m in sent_messages) or msg == sent_messages[0][1]
@@ -232,7 +232,7 @@ def test_process_bill_and_dispatch_pre_april_bill():
 
     assert len(sent) == 1
     assert "before April 2025" in sent[0]
-    # No DB write — analysis never ran.
+    # No DB write - analysis never ran.
     write_mock.assert_not_called()
 
 
@@ -257,7 +257,7 @@ def test_process_bill_and_dispatch_not_mescom():
 
 
 def test_process_bill_and_dispatch_gemini_exception_isolated():
-    """Any exception leads to gemini_error_response — user never gets nothing."""
+    """Any exception leads to gemini_error_response - user never gets nothing."""
     from backend.app import process_bill_and_dispatch
 
     sent = []
@@ -279,7 +279,7 @@ def test_consented_user_with_text_gets_photo_prompt(client):
 
 
 # =============================================================================
-# Hardening — missing From field
+# Hardening - missing From field
 # =============================================================================
 
 

@@ -16,7 +16,7 @@ def _stub_google_texttospeech_if_missing() -> None:
     """Inject a lightweight stub into ``sys.modules`` when the real Google
     TTS SDK isn't installed (e.g. in a trimmed CI image).
 
-    Real installs take precedence — we only inject when the import genuinely
+    Real installs take precedence - we only inject when the import genuinely
     fails. That way tests that pass a mock ``client`` still exercise
     ``synthesize_kannada`` without needing gRPC / grpcio wheels locally.
     """
@@ -42,7 +42,7 @@ def _stub_google_texttospeech_if_missing() -> None:
     )
     fake.TextToSpeechClient = MagicMock
 
-    # google + google.cloud packages themselves may not exist — inject both.
+    # google + google.cloud packages themselves may not exist - inject both.
     google_pkg = sys.modules.setdefault("google", MagicMock(name="google (stub)"))
     cloud_pkg = sys.modules.setdefault(
         "google.cloud", MagicMock(name="google.cloud (stub)"),

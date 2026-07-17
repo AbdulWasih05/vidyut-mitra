@@ -5,7 +5,7 @@
 1. Calls ``extract_with_fallback`` (which wraps ``extract_bill`` + cached
    fallbacks for demo phones).
 2. Runs ``validate_extraction``. If R1 (not MESCOM) or R2 (pre-April 2025)
-   fires, returns immediately with the terminal status — no retry.
+   fires, returns immediately with the terminal status - no retry.
 3. On R3-R8 issues, issues one retry using the retry prompt with those
    issues enumerated. Tech spec §4.4: exactly one retry; no third attempt.
 4. Returns an ``ExtractionResult`` with ``status``, ``extraction`` (or None
@@ -68,7 +68,7 @@ def run_extraction(
             retries_used=0,
         )
 
-    # Terminal R1 or R2 — no retry, user gets the decline message.
+    # Terminal R1 or R2 - no retry, user gets the decline message.
     terminal = _classify(issues)
     if terminal is not None:
         return ExtractionResult(
@@ -101,7 +101,7 @@ def run_extraction(
             retries_used=1,
         )
 
-    # Terminal on retry (rare but possible — e.g. prompt made it clearer the
+    # Terminal on retry (rare but possible - e.g. prompt made it clearer the
     # bill is pre-April-2025).
     terminal2 = _classify(issues2)
     if terminal2 is not None:
@@ -114,7 +114,7 @@ def run_extraction(
         )
 
     # Two attempts, still invalid. The user gets the "bad photo" message
-    # — tech spec §4.4 is explicit: no third retry.
+    # - tech spec §4.4 is explicit: no third retry.
     return ExtractionResult(
         status=ExtractionStatus.FAILED,
         extraction=None,

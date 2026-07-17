@@ -2,7 +2,7 @@
 
 Tries to apply ``db/schema.sql`` via the ``supabase-py`` client. Supabase's
 python client does NOT expose a direct raw-SQL execution path (postgrest-py
-is REST-only), so we attempt the ``rpc('exec_sql', ...)`` pattern first — if
+is REST-only), so we attempt the ``rpc('exec_sql', ...)`` pattern first - if
 that fails (expected on a fresh project without the helper function), we
 print the schema and tell the operator to paste it into Supabase Dashboard >
 SQL Editor.
@@ -134,12 +134,12 @@ def main() -> int:
         _print_manual_instructions()
         return 3
 
-    # Attempt direct SQL via rpc — works only if the operator has already
+    # Attempt direct SQL via rpc - works only if the operator has already
     # added an ``exec_sql`` helper. On a fresh project this fails; we then
     # print the manual-paste instructions.
     schema_sql = SCHEMA_PATH.read_text(encoding="utf-8")
     try:
-        info("Attempting rpc('exec_sql', ...) — usually fails on fresh projects...")
+        info("Attempting rpc('exec_sql', ...) - usually fails on fresh projects...")
         client.rpc("exec_sql", {"sql": schema_sql}).execute()
         ok("Schema applied via rpc.")
     except Exception as exc:  # noqa: BLE001

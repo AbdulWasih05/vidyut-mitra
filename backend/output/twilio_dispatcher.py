@@ -1,7 +1,7 @@
-"""Twilio WhatsApp outbound dispatcher — skeleton for Session 4.
+"""Twilio WhatsApp outbound dispatcher - skeleton for Session 4.
 
-Only ``send_text`` is wired. Voice notes (Session 6 — Google Cloud TTS) and
-infographics (Session 6 — Pillow template overlay) land later.
+Only ``send_text`` is wired. Voice notes (Session 6 - Google Cloud TTS) and
+infographics (Session 6 - Pillow template overlay) land later.
 
 Rate limit: Twilio sandbox is 1 message/second. We sleep BEFORE each send so
 successive calls queue cleanly in the same invocation; PRD §2.3 uses three
@@ -85,7 +85,7 @@ def _public_media_url(filename: str) -> str:
     base = os.environ.get("PUBLIC_BASE_URL")
     if not base:
         raise RuntimeError(
-            "PUBLIC_BASE_URL not set — cannot serve media to Twilio. "
+            "PUBLIC_BASE_URL not set - cannot serve media to Twilio. "
             "Set it to your ngrok URL (e.g. https://abcd.ngrok-free.app)."
         )
     return f"{base.rstrip('/')}/media/{filename}"
@@ -108,7 +108,7 @@ def send_voice_note(
     NOTE: Twilio's CDN fetches the media URL asynchronously, several seconds
     after ``messages.create`` returns. Pass ``cleanup=False`` from production
     call paths and rely on the periodic sweeper in ``app._start_media_sweeper``
-    to reap the temp file — unlinking here races the fetch and yields 404s.
+    to reap the temp file - unlinking here races the fetch and yields 404s.
     ``cleanup=True`` is retained for tests that don't use the real CDN.
     """
     import os as _os

@@ -1,6 +1,6 @@
 """Wipe all DEMO-prefixed users (and their bills via CASCADE).
 
-For post-hackathon cleanup. Does NOT touch any real consented user row —
+For post-hackathon cleanup. Does NOT touch any real consented user row -
 only rows whose phone_number starts with ``whatsapp:+91DEMO``.
 
 Usage::
@@ -50,7 +50,7 @@ def main() -> int:
     )
     bill_count = bills.count or 0
 
-    # Delete users — bills cascade via FK.
+    # Delete users - bills cascade via FK.
     for uid in user_ids:
         client.table("users").delete().eq("id", uid).execute()
 

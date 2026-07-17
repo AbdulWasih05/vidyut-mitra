@@ -35,7 +35,7 @@ class TestInitTtsClient:
 
 
 # =============================================================================
-# synthesize_kannada — mocked Google TTS
+# synthesize_kannada - mocked Google TTS
 # =============================================================================
 
 
@@ -89,7 +89,7 @@ class TestSynthesizeToTempFile:
 
 
 # =============================================================================
-# compose_kannada_voice_summary — three variants
+# compose_kannada_voice_summary - three variants
 # =============================================================================
 
 
@@ -169,10 +169,10 @@ class TestVoiceSummaryVariants:
         assert "200" in text
         # Kannada word for "lost" (ನಷ್ಟ).
         assert "ನಷ್ಟ" in text
-        # Orchestrator re-computes the full bill from first principles — that's
+        # Orchestrator re-computes the full bill from first principles - that's
         # 390 × 5.80 + 2 × 145 + 390 × 0.36 + 9% × 2262 + 390 × 0.50 ≈ Rs. 3,091.
         # (Differs from the extracted 3044 by the FPPCA placeholder delta,
-        # which is expected — same behaviour seen in the text composer.)
+        # which is expected - same behaviour seen in the text composer.)
         assert "3,091" in text
         assert len(text) <= 600
 

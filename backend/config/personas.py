@@ -1,4 +1,4 @@
-"""Frozen demo persona definitions — the test suite's ground truth.
+"""Frozen demo persona definitions - the test suite's ground truth.
 
 Values match ``docs/briefing_v4.md`` §4 byte-for-byte. Any change that breaks
 these assertions is wrong per CLAUDE.md §3 Rule 3, even if the code "looks
@@ -43,7 +43,7 @@ class Persona:
 
 
 # =============================================================================
-# Persona 1 — Nikhil Shetty: Fixed Charge Trap hero
+# Persona 1 - Nikhil Shetty: Fixed Charge Trap hero
 # Briefing §4, primary demo example. 3 kW sanctioned, peak ~1.5 kW.
 # =============================================================================
 
@@ -64,8 +64,8 @@ NIKHIL = Persona(
 )
 
 # =============================================================================
-# Persona 2 — Sunita Bhat: Solar ROI hero
-# Briefing §4. 3 kW sanctioned, 280 units — Fixed Charge Trap also fires
+# Persona 2 - Sunita Bhat: Solar ROI hero
+# Briefing §4. 3 kW sanctioned, 280 units - Fixed Charge Trap also fires
 # (peak ≈ 1.95 kW < 3-1=2 kW threshold) per CLAUDE.md §3 Rule 3 table.
 # =============================================================================
 
@@ -86,8 +86,8 @@ SUNITA = Persona(
 )
 
 # =============================================================================
-# Persona 3 — Priya Nayak: Gruha Jyothi Visibility hero
-# Briefing §4. Entitlement = min(105 + 10, 200) = 115 (NOT 200 — CLAUDE.md
+# Persona 3 - Priya Nayak: Gruha Jyothi Visibility hero
+# Briefing §4. Entitlement = min(105 + 10, 200) = 115 (NOT 200 - CLAUDE.md
 # Rule 1 warns about this copy-paste error). Consumption 110 < 115, so net
 # bill is Rs. 0.00 and utilization 110/115 = 95.65% → RED approaching-
 # entitlement warning fires (Level 0, threshold 0.90).

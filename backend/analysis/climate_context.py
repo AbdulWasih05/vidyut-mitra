@@ -1,15 +1,15 @@
-"""Climate-context framing for bill responses — the Sustainable Development
+"""Climate-context framing for bill responses - the Sustainable Development
 track reframe (Session 5.8).
 
 Three pure functions:
 
-- ``compute_annual_household_footprint`` — annual kWh → kg CO2 → trees to
+- ``compute_annual_household_footprint`` - annual kWh → kg CO2 → trees to
   offset, km of car travel. Gives the user a visceral sense of their grid
   footprint in units they already understand (trees, cars).
-- ``compute_solar_climate_impact`` — what a 3 kW rooftop system avoids per
+- ``compute_solar_climate_impact`` - what a 3 kW rooftop system avoids per
   year + 25-year lifetime + a MESCOM-scale scenario ("if 1 % of the 22.6
   lakh MESCOM households install 3 kW, that's ~14,500 cars off road").
-- ``generate_consumption_band_tip`` — one-line conservation prescription
+- ``generate_consumption_band_tip`` - one-line conservation prescription
   keyed on the consumption band. GJ-enrolled households within striking
   distance of the 200-unit cliff get an extra warning line appended.
 
@@ -30,7 +30,7 @@ from backend.config import tariff_constants as tc
 def compute_annual_household_footprint(units_consumed: int) -> dict[str, Any]:
     """Annual footprint from one month's consumption figure, projected flat.
 
-    We project the current month × 12 — this is the honest estimate for a
+    We project the current month × 12 - this is the honest estimate for a
     user who just submitted one bill. Session 7+ could refine with bill
     history when we have more than one row per user.
     """
@@ -103,6 +103,6 @@ def generate_consumption_band_tip(
             break
 
     if is_gj and units > 160:
-        tip += " ⚠️ Approaching 200-unit Gruha Jyothi cliff — see cliff warning above."
+        tip += " ⚠️ Approaching 200-unit Gruha Jyothi cliff - see cliff warning above."
 
     return tip

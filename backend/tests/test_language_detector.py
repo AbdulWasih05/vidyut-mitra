@@ -37,7 +37,7 @@ class TestDetectLanguage:
         assert detect_language("...!?") == "en"
 
     def test_other_indic_script_not_kannada(self):
-        # Devanagari (Hindi) is U+0900-U+097F, NOT in the Kannada block —
+        # Devanagari (Hindi) is U+0900-U+097F, NOT in the Kannada block -
         # we deliberately don't auto-route Hindi-speakers to Kannada.
         assert detect_language("नमस्ते") == "en"
 

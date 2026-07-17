@@ -1,14 +1,14 @@
 """VidyutMitra Flask entry point.
 
 Session 5 surface:
-- ``GET /health`` — liveness.
-- ``POST /whatsapp`` — Twilio webhook. Consented media kicks off the
+- ``GET /health`` - liveness.
+- ``POST /whatsapp`` - Twilio webhook. Consented media kicks off the
   extraction → analysis → response → dispatch pipeline in a daemon thread
   and returns a TwiML ack immediately (tech spec §11.1: the main response
   is sent via out-of-band Twilio REST calls because processing takes
   ~10 seconds and the webhook must respond within 15).
 
-Startup validates every required env var from CLAUDE.md §9 — abort early
+Startup validates every required env var from CLAUDE.md §9 - abort early
 with a readable error rather than let a missing key blow up mid-request.
 """
 from __future__ import annotations
@@ -59,7 +59,7 @@ logger = logging.getLogger(__name__)
 
 APP_VERSION = "0.5.0"
 
-# CLAUDE.md §9 — required at startup for the webhook boot. ADMIN_PASSWORD,
+# CLAUDE.md §9 - required at startup for the webhook boot. ADMIN_PASSWORD,
 # AWS*, GOOGLE_APPLICATION_CREDENTIALS, PUBLIC_BASE_URL are only needed by
 # session-specific routes / deployment.
 REQUIRED_ENV_VARS = (
@@ -93,7 +93,7 @@ def _validate_env(strict: bool = True) -> list[str]:
 
 
 # =============================================================================
-# Async bill processor — the actual pipeline
+# Async bill processor - the actual pipeline
 # =============================================================================
 
 
@@ -111,7 +111,7 @@ def process_bill_and_dispatch(
     webhook itself can return TwiML within Twilio's 15-second budget.
 
     Returns the dispatched message text (handy for tests + logging). Never
-    re-raises — every exception is caught, logged, and results in the
+    re-raises - every exception is caught, logged, and results in the
     generic "try again in a minute" response being sent to the user.
     """
     # Late imports keep test setup lightweight and allow monkeypatching.
@@ -156,7 +156,7 @@ def process_bill_and_dispatch(
     except GeminiError as e:
         logger.error("extraction raised GeminiError outside pipeline: %s", e)
         return _send(response_composer.compose_gemini_error_response())
-    except Exception:  # noqa: BLE001 — last-resort: never let the user get nothing
+    except Exception:  # noqa: BLE001 - last-resort: never let the user get nothing
         logger.exception("unexpected extraction error")
         return _send(response_composer.compose_gemini_error_response())
 
@@ -168,7 +168,7 @@ def process_bill_and_dispatch(
     if result.status == ExtractionStatus.FAILED:
         return _send(response_composer.compose_bad_photo_response())
 
-    # OK path — analyse + compose. Use the AI-enhanced dispatcher; it falls
+    # OK path - analyse + compose. Use the AI-enhanced dispatcher; it falls
     # back to the templated response on any Groq failure or validation miss.
     try:
         analysis = analyze_bill(result.extraction)
@@ -189,11 +189,11 @@ def process_bill_and_dispatch(
             extraction=result.extraction,
             follow_up_count=0,
         )
-    except Exception:  # noqa: BLE001 — cache is best-effort
+    except Exception:  # noqa: BLE001 - cache is best-effort
         logger.exception("last_bill_cache.set_last_bill failed")
 
     # Kannada voice note (Session 6). Best-effort: a TTS or dispatch failure
-    # logs and moves on — the text response already landed.
+    # logs and moves on - the text response already landed.
     try:
         _dispatch_voice_note(from_number, result.extraction, analysis)
     except Exception:  # noqa: BLE001
@@ -217,7 +217,7 @@ def process_bill_and_dispatch(
     except Exception:  # noqa: BLE001
         logger.exception("feedback prompt dispatch failed")
 
-    # Persist. DB failure must not block the user-facing response — log and move on.
+    # Persist. DB failure must not block the user-facing response - log and move on.
     try:
         c = supabase_client_override or supabase_client.init_client()
         user = supabase_client.get_or_create_user(from_number, client=c)
@@ -227,7 +227,7 @@ def process_bill_and_dispatch(
             analysis=analysis.to_jsonable(),
             client=c,
         )
-    except Exception:  # noqa: BLE001 — DB failure is logged, not user-visible
+    except Exception:  # noqa: BLE001 - DB failure is logged, not user-visible
         logger.exception("supabase write_bill failed")
 
     return dispatched
@@ -262,7 +262,7 @@ def _start_media_sweeper() -> None:
                             p.unlink()
                     except OSError:
                         pass
-            except Exception:  # noqa: BLE001 — sweeper must never die
+            except Exception:  # noqa: BLE001 - sweeper must never die
                 logger.exception("media sweeper iteration failed")
             _time.sleep(MEDIA_SWEEP_INTERVAL_SECONDS)
 
@@ -320,13 +320,13 @@ def create_app(*, validate_env: bool = True) -> Flask:
 
         command = body.upper()
 
-        # STOP intercepted BEFORE consent check (PRD §2.4 — works for never-
+        # STOP intercepted BEFORE consent check (PRD §2.4 - works for never-
         # consented users).
         if command == "STOP":
             resp = handle_stop_command(from_number)
             return _twiml(resp.message)
 
-        # LANG / LANGUAGE — toggles persisted preference. Comes AFTER STOP
+        # LANG / LANGUAGE - toggles persisted preference. Comes AFTER STOP
         # (so STOP still wins on a "STOP LANG" race) but BEFORE the consent
         # gate so an awaiting-consent user can flip the language too.
         if command in ("LANG", "LANGUAGE"):
@@ -429,12 +429,12 @@ def create_app(*, validate_env: bool = True) -> Flask:
             )
 
         # Follow-up keywords (PRD §2.3). Intercepted before the generic
-        # "send a photo" prompt. Two-turn limit is hard — judges will stress-
+        # "send a photo" prompt. Two-turn limit is hard - judges will stress-
         # test loops, so we cap at FOLLOWUP_LIMIT and then require a fresh bill.
         if command in FOLLOWUP_KEYWORDS:
             return _twiml(_handle_followup(from_number, command))
 
-        # Consented user sent some other text — prompt for a photo.
+        # Consented user sent some other text - prompt for a photo.
         return _twiml(
             "📸 Send a photo of your MESCOM electricity bill and I'll "
             "analyze it for you."
@@ -651,7 +651,7 @@ def _dispatch_infographic(from_number, extraction, analysis) -> None:
 def _handle_followup(phone_number: str, keyword: str) -> str:
     """Produce the response text for a SOLAR/FIXED/SUBSIDY/CLIFF reply.
 
-    Does NOT go through the daemon-thread flow — follow-ups are pure
+    Does NOT go through the daemon-thread flow - follow-ups are pure
     function calls on already-computed analysis, so we can return them
     inline in the webhook response within milliseconds.
 
@@ -679,7 +679,7 @@ def _handle_followup(phone_number: str, keyword: str) -> str:
 
     try:
         ai_line = ai_composer.compose_followup_line(keyword, extraction, analysis)
-    except Exception:  # noqa: BLE001 — AI failures must never block the reply
+    except Exception:  # noqa: BLE001 - AI failures must never block the reply
         logger.exception("ai followup line failed; falling back to template")
         ai_line = None
 
@@ -691,7 +691,7 @@ def _handle_followup(phone_number: str, keyword: str) -> str:
 def _process_bill_with_error_isolation(
     from_number: str, media_url: str, message_body: str = ""
 ) -> None:
-    """Thread target — catches anything ``process_bill_and_dispatch`` missed
+    """Thread target - catches anything ``process_bill_and_dispatch`` missed
     so a stray exception never kills the worker thread silently.
     """
     try:
@@ -708,7 +708,7 @@ def _process_bill_with_error_isolation(
 
 
 def _twiml(body: str, status: int = 200) -> tuple[str, int, dict]:
-    """Minimal TwiML response — Twilio wants XML back on webhook hits."""
+    """Minimal TwiML response - Twilio wants XML back on webhook hits."""
     xml = (
         '<?xml version="1.0" encoding="UTF-8"?>'
         "<Response>"

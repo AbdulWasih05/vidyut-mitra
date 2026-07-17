@@ -21,7 +21,7 @@ class ExtractionStatus(str, Enum):
 
     ``ok`` and ``failed`` distinguish first-pass success from post-retry
     failure. ``pre_april_2025`` and ``not_mescom`` are terminal R1/R2
-    aborts (no retry — the photo itself is unsuitable). ``retry_needed``
+    aborts (no retry - the photo itself is unsuitable). ``retry_needed``
     is an internal state used by the pipeline between the first extract and
     the retry; it is not returned as a terminal value.
     """
@@ -103,7 +103,7 @@ class ExtractionResult:
 
     Callers should inspect ``status`` first. ``extraction`` may be ``None``
     on terminal R1/R2 aborts or hard failures. ``raw`` is kept for debugging
-    and the admin dashboard; do NOT persist the raw image — only the parsed
+    and the admin dashboard; do NOT persist the raw image - only the parsed
     fields end up in Supabase per CLAUDE.md §3 Rule 2.
     """
 

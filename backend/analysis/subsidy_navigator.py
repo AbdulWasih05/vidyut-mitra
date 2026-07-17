@@ -1,11 +1,11 @@
-"""Subsidy Navigator — PM Surya Ghar, Gruha Jyothi Visibility, SWH rebate.
+"""Subsidy Navigator - PM Surya Ghar, Gruha Jyothi Visibility, SWH rebate.
 
 Source: tech spec §7, PRD §4.4.
 
 Three surfaces:
-- ``check_pm_surya_ghar`` — eligibility verdict + tiered subsidy math.
-- ``compute_gj_visibility`` — reveal the invisible subsidy + fire cliff warnings.
-- ``check_solar_water_heater_rebate`` — secondary talking point.
+- ``check_pm_surya_ghar`` - eligibility verdict + tiered subsidy math.
+- ``compute_gj_visibility`` - reveal the invisible subsidy + fire cliff warnings.
+- ``check_solar_water_heater_rebate`` - secondary talking point.
 
 All numeric constants come from ``config.tariff_constants``. No magic numbers.
 """
@@ -20,12 +20,12 @@ from backend.config import tariff_constants as tc
 
 
 # =============================================================================
-# PM Surya Ghar — central subsidy (MNRE), tiered
+# PM Surya Ghar - central subsidy (MNRE), tiered
 # =============================================================================
 
 
 def pm_surya_ghar_subsidy(system_kw: int) -> int:
-    """Rupee subsidy for a given system size — tech spec §7.1 + §8.3.
+    """Rupee subsidy for a given system size - tech spec §7.1 + §8.3.
 
     Tier: Rs. 30,000 × first 2 kW, plus Rs. 18,000 × 3rd kW, capped at
     Rs. 78,000. Anything above 3 kW still gets Rs. 78,000.
@@ -60,7 +60,7 @@ def check_pm_surya_ghar(
             "system_size_kw": 0,
         }
 
-    # Very-low-consumption flag (marginal — solar may not pay back).
+    # Very-low-consumption flag (marginal - solar may not pay back).
     if units_consumed is not None and units_consumed < 50:
         return {
             "eligible": True,
@@ -84,7 +84,7 @@ def check_pm_surya_ghar(
             ),
         }
 
-    # Standard case — assume 3 kW as the subsidy-maximising ceiling; Solar ROI
+    # Standard case - assume 3 kW as the subsidy-maximising ceiling; Solar ROI
     # may downscale if appropriate.
     return {
         "eligible": True,
@@ -92,7 +92,7 @@ def check_pm_surya_ghar(
         "reason": (
             "Domestic LT-1 with sanctioned load suitable for rooftop solar."
             + (
-                " You are currently a Gruha Jyothi beneficiary — solar payback "
+                " You are currently a Gruha Jyothi beneficiary - solar payback "
                 "is slower while you're under entitlement (see Solar ROI)."
                 if is_gj_beneficiary else ""
             )
@@ -113,7 +113,7 @@ def check_pm_surya_ghar(
 
 
 # =============================================================================
-# Gruha Jyothi Visibility — the three-level cliff + Level 0 approaching
+# Gruha Jyothi Visibility - the three-level cliff + Level 0 approaching
 # =============================================================================
 
 
@@ -137,7 +137,7 @@ def _overall_risk(warnings: list[GJWarning]) -> str:
 
 
 # =============================================================================
-# Session 5.8 — Level 2 cliff enhancement (cost + behavior + CO2)
+# Session 5.8 - Level 2 cliff enhancement (cost + behavior + CO2)
 # =============================================================================
 
 # Power draw assumptions used to translate "cut X units" into everyday units
@@ -161,7 +161,7 @@ def _enhanced_level_2_message(
     """
     units_to_cut = max(1, tc.GJ_MONTHLY_HARD_CLIFF_UNITS - units_consumed)
 
-    # Behavior prescription — per-day reductions so the framing is relatable.
+    # Behavior prescription - per-day reductions so the framing is relatable.
     # Monthly kWh × 1000 / watts = monthly hours. Divide by 30 for daily.
     fan_hours_daily = round((units_to_cut * 1000 / _FAN_WATTS) / 30, 1)
     ac_minutes_daily = round((units_to_cut * 1000 / _AC_WATTS) / 30 * 60)
@@ -173,28 +173,28 @@ def _enhanced_level_2_message(
 
     if severity == "red":
         header = (
-            f"⚠️ Gruha Jyothi Cliff Alert — {units_consumed} of "
+            f"⚠️ Gruha Jyothi Cliff Alert - {units_consumed} of "
             f"{tc.GJ_MONTHLY_HARD_CLIFF_UNITS} free units used.\n"
             f"Crossing {tc.GJ_MONTHLY_HARD_CLIFF_UNITS} means paying the "
-            f"ENTIRE bill this month — approximately "
+            f"ENTIRE bill this month - approximately "
             f"Rs. {hypothetical_full_bill:,.0f}."
         )
     else:
         header = (
-            f"⚡ Gruha Jyothi Watch — {units_consumed} of "
+            f"⚡ Gruha Jyothi Watch - {units_consumed} of "
             f"{tc.GJ_MONTHLY_HARD_CLIFF_UNITS} free units used.\n"
             f"If you cross {tc.GJ_MONTHLY_HARD_CLIFF_UNITS} this month, "
             f"the full bill (~Rs. {hypothetical_full_bill:,.0f}) becomes "
-            f"payable — no partial subsidy."
+            f"payable - no partial subsidy."
         )
 
     return (
         f"{header}\n\n"
         "To stay safe:\n"
-        f"🎯 Cut {units_to_cut} units — roughly {fan_hours_daily} hours "
+        f"🎯 Cut {units_to_cut} units - roughly {fan_hours_daily} hours "
         f"less fan OR {ac_minutes_daily} minutes less AC per day.\n"
         "💰 Stay at your Rs. 0 net bill.\n"
-        f"🌱 {co2_avoided_kg:.1f} kg CO2 avoided — equal to "
+        f"🌱 {co2_avoided_kg:.1f} kg CO2 avoided - equal to "
         f"{tree_days} tree-days of offset."
     )
 
@@ -215,7 +215,7 @@ def compute_gj_warnings(
     and the GJ Visibility demo moment dies.
     """
     if entitlement_units is None or entitlement_units <= 0:
-        # Defensive — the extractor should have populated entitlement_units
+        # Defensive - the extractor should have populated entitlement_units
         # for GJ bills, but fall back gracefully.
         return [GJWarning(level="green", cliff=None, message=None)]
 
@@ -224,7 +224,7 @@ def compute_gj_warnings(
     entitlement_util = units_consumed / entitlement_units
     hard_cap_util = units_consumed / tc.GJ_MONTHLY_HARD_CLIFF_UNITS
 
-    # --- Level 3 — eligibility at risk (most severe, flag first) ---
+    # --- Level 3 - eligibility at risk (most severe, flag first) ---
     if trailing_10m_avg is not None:
         eligibility_util = trailing_10m_avg / tc.GJ_MONTHLY_HARD_CLIFF_UNITS
         if eligibility_util >= tc.GJ_ELIGIBILITY_RED_THRESHOLD:
@@ -232,7 +232,7 @@ def compute_gj_warnings(
                 level="red",
                 cliff="eligibility",
                 message=(
-                    f"Your 10-month average is {trailing_10m_avg:.0f} units — "
+                    f"Your 10-month average is {trailing_10m_avg:.0f} units - "
                     f"near the 200-unit disqualification limit. One high-"
                     f"consumption month could end your Gruha Jyothi enrollment "
                     f"entirely (re-qualify only over a fresh 10-month window)."
@@ -248,7 +248,7 @@ def compute_gj_warnings(
                 ),
             ))
 
-    # --- Level 2 — monthly hard cliff (200 units) ---
+    # --- Level 2 - monthly hard cliff (200 units) ---
     # Enhanced in Session 5.8: 160-199 range adds specific cliff cost +
     # behavior prescription + CO2 equivalence so the warning is
     # actionable, not just alarming. Crossing 200 already → informational
@@ -258,7 +258,7 @@ def compute_gj_warnings(
             level="red",
             cliff="monthly_hard",
             message=(
-                f"You used {units_consumed} units — OVER the 200-unit cap. "
+                f"You used {units_consumed} units - OVER the 200-unit cap. "
                 f"The entire Rs. {hypothetical_full_bill:,.0f} was payable "
                 f"this month, not just the excess. Subsidy fully lost for "
                 f"this cycle."
@@ -285,7 +285,7 @@ def compute_gj_warnings(
             ),
         ))
 
-    # --- Level 1 — soft step (units > entitlement, still within 200) ---
+    # --- Level 1 - soft step (units > entitlement, still within 200) ---
     # "Info" severity: you're paying the standard tariff for the excess, not
     # losing the whole subsidy.
     if (
@@ -298,12 +298,12 @@ def compute_gj_warnings(
             cliff="soft_step",
             message=(
                 f"You've used {excess_units:.0f} units above your "
-                f"{entitlement_units:.0f}-unit entitlement — "
+                f"{entitlement_units:.0f}-unit entitlement - "
                 f"you'll pay standard tariff for those excess units."
             ),
         ))
 
-    # --- Level 0 — approaching personal entitlement (proactive) ---
+    # --- Level 0 - approaching personal entitlement (proactive) ---
     # Fires regardless of soft_step; once you've crossed, the user sees
     # both warnings (soft_step first per precedence, then approaching).
     if entitlement_util >= tc.GJ_APPROACHING_RED_THRESHOLD:
@@ -481,7 +481,7 @@ def compute_gj_visibility(
 
 
 # =============================================================================
-# Solar water heater rebate — tech spec §7.3
+# Solar water heater rebate - tech spec §7.3
 # =============================================================================
 
 
@@ -489,7 +489,7 @@ def check_solar_water_heater_rebate(
     units_consumed: Optional[int],
     tariff_category: str = tc.DOMESTIC_TARIFF_CODE,
 ) -> dict[str, Any]:
-    """Secondary talking point — Rs. 0.25/unit energy discount.
+    """Secondary talking point - Rs. 0.25/unit energy discount.
 
     Per tech spec §7.3: LT-1 only, requires BIS-certified SWH. Returns a
     monthly saving estimate the response composer can surface.
@@ -504,7 +504,7 @@ def check_solar_water_heater_rebate(
     monthly_saving = (units_consumed or 0) * per_unit_discount
     return {
         "eligible": True,
-        "reason": "LT-1 Domestic — BIS-certified solar water heater unlocks a per-unit discount.",
+        "reason": "LT-1 Domestic - BIS-certified solar water heater unlocks a per-unit discount.",
         "discount_per_unit_rupees": per_unit_discount,
         "monthly_saving_estimate": round(monthly_saving, 2),
         "annual_saving_estimate": round(monthly_saving * 12, 2),

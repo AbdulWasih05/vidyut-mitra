@@ -7,13 +7,13 @@ import "./landing.css";
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=15551445754&text=Hi";
 
 /* ═══════════════════════════════════════════════════════════════
-   VidyutMitra — landing page
+   VidyutMitra - landing page
    Ported from the Claude Design handoff bundle (VidyutMitra.html).
    Hybrid theme: C palette (cream + emerald) · D effects (light rays,
    chamfer, pill nav, serif) · B annotated bill card.
    ═══════════════════════════════════════════════════════════════ */
 export default function LandingPage(): React.ReactElement {
-  /* Port of vm-site.js — light-ray halos, scroll reveal, animated chat,
+  /* Port of vm-site.js - light-ray halos, scroll reveal, animated chat,
      voice waveforms + play toggle, nav shadow on scroll. */
   useEffect(() => {
     const reduce =

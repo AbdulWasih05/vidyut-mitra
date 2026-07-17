@@ -1,9 +1,9 @@
 """Smoke tests for Session 5.5 two-turn follow-up flow.
 
 Three surfaces under test:
-- ``output.last_bill_cache`` — set/get round-trip, 30-min TTL, clear.
-- ``output.response_composer`` follow-up composers — personalised content.
-- ``app.py /whatsapp`` routing — keyword dispatch, limit enforcement,
+- ``output.last_bill_cache`` - set/get round-trip, 30-min TTL, clear.
+- ``output.response_composer`` follow-up composers - personalised content.
+- ``app.py /whatsapp`` routing - keyword dispatch, limit enforcement,
   STOP cache-clear, successful-analysis cache-populate.
 """
 from __future__ import annotations
@@ -55,7 +55,7 @@ def _extraction_for(persona) -> BillExtraction:
 
 
 def _rehena_extraction() -> BillExtraction:
-    """170-unit GJ bill — crossed entitlement (Level 1 soft step)."""
+    """170-unit GJ bill - crossed entitlement (Level 1 soft step)."""
     return BillExtraction(
         is_mescom_bill=True,
         tariff_category="LT-1",
@@ -75,7 +75,7 @@ def _rehena_extraction() -> BillExtraction:
 
 
 def _koppala_extraction() -> BillExtraction:
-    """390-unit GJ bill — crossed 200, Level 2 hard cliff."""
+    """390-unit GJ bill - crossed 200, Level 2 hard cliff."""
     return BillExtraction(
         is_mescom_bill=True,
         tariff_category="LT-1",
@@ -102,7 +102,7 @@ def _reset_cache():
 
 
 # =============================================================================
-# last_bill_cache — set/get, TTL, increment, clear
+# last_bill_cache - set/get, TTL, increment, clear
 # =============================================================================
 
 
@@ -163,7 +163,7 @@ class TestCache:
 
 
 # =============================================================================
-# Composer content — personas render correctly
+# Composer content - personas render correctly
 # =============================================================================
 
 
@@ -353,7 +353,7 @@ class TestStopClearsCache:
         assert last_bill_cache.get_last_bill(PHONE) is not None
 
         # STOP executes without touching consent state checks by patching the
-        # Supabase guts — consent_manager uses in-memory fallback on failure.
+        # Supabase guts - consent_manager uses in-memory fallback on failure.
         with patch("backend.app.handle_stop_command") as stop_mock:
             from backend.consent.consent_manager import (
                 ConsentResponse, ConsentState, handle_stop_command,

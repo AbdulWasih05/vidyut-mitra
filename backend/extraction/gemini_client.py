@@ -131,15 +131,15 @@ def extract_bill(
 
     # Gemini accepts image bytes via a {"mime_type","data"} blob. JPEG is the
     # overwhelming default for WhatsApp photos; the content server on Twilio
-    # reports a real MIME type — for v1 we trust the image is JPEG/PNG and
+    # reports a real MIME type - for v1 we trust the image is JPEG/PNG and
     # tag it as image/jpeg (Gemini auto-detects regardless).
     image_part = {"mime_type": "image/jpeg", "data": image_bytes}
 
     try:
         response = model.generate_content([prompt, image_part])
-    except Exception as e:  # noqa: BLE001 — convert any SDK error to GeminiError
+    except Exception as e:  # noqa: BLE001 - convert any SDK error to GeminiError
         # google.api_core.exceptions.__str__ has segfaulted on malformed
-        # protobufs — never call str() / repr() on the exception. But e.args[0]
+        # protobufs - never call str() / repr() on the exception. But e.args[0]
         # is a plain string (the human-readable message) and is safe to read.
         # That's where Gemini puts the "Quota exceeded for ... per minute / day"
         # text we need to identify which limit fired.

@@ -1,4 +1,4 @@
-"""Seasonal dominant-load inference — NOT true NILM.
+"""Seasonal dominant-load inference - NOT true NILM.
 
 True NILM (Non-Intrusive Load Monitoring) requires minute-resolution smart-
 meter data. This module uses heuristic rules over (sanctioned_load,
@@ -6,7 +6,7 @@ consumption, season) to identify the likely dominant appliance category for
 a typical coastal-Karnataka household.
 
 Honest framing in Q&A: *"seasonal inference, not disaggregation."* Judges
-who know NILM will ask — this is the defensible answer. We're using three
+who know NILM will ask - this is the defensible answer. We're using three
 signals (load class, consumption band, calendar month) to make one
 categorical call with a calibrated confidence label, and we attach a
 specific, quantified conservation action the user can act on today.
@@ -91,7 +91,7 @@ def infer_dominant_load(
                 "as the dominant driver for a coastal-Karnataka household"
             ),
             conservation_action=(
-                "Raise AC thermostat from 18°C to 24°C — cuts cooling "
+                "Raise AC thermostat from 18°C to 24°C - cuts cooling "
                 f"electricity by ~30% and saves ~Rs. {rupees:,.0f}/month"
             ),
             monthly_savings_rupees_estimate=rupees,
@@ -112,7 +112,7 @@ def infer_dominant_load(
             conservation_action=(
                 "Switch to a BIS-certified solar water heater (Rs. 25/kW "
                 "fixed-charge rebate + zero running cost), or cap geyser "
-                "runtime at 15 min/use — "
+                "runtime at 15 min/use - "
                 f"saves ~Rs. {rupees:,.0f}/month"
             ),
             monthly_savings_rupees_estimate=rupees,
@@ -135,7 +135,7 @@ def infer_dominant_load(
             conservation_action=(
                 "Switch ceiling fans to 5-star BLDC models (~50% cut on "
                 "fan electricity) and finish LED conversion for lighting "
-                f"(~80% cut on lighting) — saves ~Rs. {rupees:,.0f}/month"
+                f"(~80% cut on lighting) - saves ~Rs. {rupees:,.0f}/month"
             ),
             monthly_savings_rupees_estimate=rupees,
             monthly_co2_avoided_kg_estimate=_co2_avoided(rupees),
@@ -154,14 +154,14 @@ def infer_dominant_load(
             ),
             conservation_action=(
                 "A 5-star refrigerator uses ~40% less electricity than a "
-                "3-star. Check your fridge's star rating — "
+                "3-star. Check your fridge's star rating - "
                 f"an upgrade saves ~Rs. {rupees:,.0f}/month"
             ),
             monthly_savings_rupees_estimate=rupees,
             monthly_co2_avoided_kg_estimate=_co2_avoided(rupees),
         )
 
-    # --- Fallback — mixed, low confidence ---
+    # --- Fallback - mixed, low confidence ---
     rupees = _savings_rupees(units, 0.10)
     return DominantLoadResult(
         dominant_load="mixed",
@@ -172,7 +172,7 @@ def infer_dominant_load(
         ),
         conservation_action=(
             "LED lighting + 5-star appliances give the broadest efficiency "
-            f"gain — saves ~Rs. {rupees:,.0f}/month"
+            f"gain - saves ~Rs. {rupees:,.0f}/month"
         ),
         monthly_savings_rupees_estimate=rupees,
         monthly_co2_avoided_kg_estimate=_co2_avoided(rupees),

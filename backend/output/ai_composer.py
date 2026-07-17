@@ -6,7 +6,7 @@ reply. Math is owned by the analysis modules; AI never invents numbers.
 
 Every public function returns ``None`` on any failure (no API key, network
 error, malformed JSON, validation failure). Callers fall back to fully
-templated rendering — the user always gets a correct response.
+templated rendering - the user always gets a correct response.
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ from backend.analysis.orchestrator import AnalysisResult
 
 logger = logging.getLogger(__name__)
 
-# Llama 3.3 70B Versatile — best instruction-following at LPU speed.
+# Llama 3.3 70B Versatile - best instruction-following at LPU speed.
 GROQ_MODEL = "llama-3.3-70b-versatile"
 MAX_OUTPUT_TOKENS_MAIN = 160
 MAX_OUTPUT_TOKENS_FOLLOWUP = 80
@@ -42,7 +42,7 @@ class AIFollowupLine:
 
 
 # =============================================================================
-# System prompts — minified for token efficiency (Groq has no context cache).
+# System prompts - minified for token efficiency (Groq has no context cache).
 # =============================================================================
 
 
@@ -105,7 +105,7 @@ _FOLLOWUP_SYSTEM_PROMPT = (
 
 
 # =============================================================================
-# Fact-pack builders — compact JSON the AI may reference.
+# Fact-pack builders - compact JSON the AI may reference.
 # =============================================================================
 
 
@@ -113,27 +113,27 @@ def build_main_factpack(result: AnalysisResult) -> dict[str, Any]:
     """Compact fact-pack for the main bill report.
 
     Field names are abbreviated to save input tokens:
-      u   — units consumed
-      l   — sanctioned load (kW)
-      b   — net bill amount (rupees)
-      g   — is GJ beneficiary (1/0)
-      fc  — FCT fires (1/0)
-      p   — estimated peak (kW)
-      fm  — FCT excess monthly cost (rupees)
-      fa  — FCT excess annual cost (rupees)
-      fr  — FCT recommended load (kW)
-      se  — solar eligible (1/0)
-      ss  — solar PMSG subsidy (rupees)
-      sm  — solar monthly savings (rupees)
-      sp  — solar payback years
-      sl  — solar lifetime savings (lakh)
-      sc  — solar CO2 tonnes/year
-      ge  — GJ enrolled (1/0)
-      ent — GJ entitlement units
-      uPct— GJ entitlement utilization %
-      subM— GJ monthly subsidy received (rupees)
-      warn— GJ cliff warning level
-      buf — units of buffer left before crossing entitlement
+      u   - units consumed
+      l   - sanctioned load (kW)
+      b   - net bill amount (rupees)
+      g   - is GJ beneficiary (1/0)
+      fc  - FCT fires (1/0)
+      p   - estimated peak (kW)
+      fm  - FCT excess monthly cost (rupees)
+      fa  - FCT excess annual cost (rupees)
+      fr  - FCT recommended load (kW)
+      se  - solar eligible (1/0)
+      ss  - solar PMSG subsidy (rupees)
+      sm  - solar monthly savings (rupees)
+      sp  - solar payback years
+      sl  - solar lifetime savings (lakh)
+      sc  - solar CO2 tonnes/year
+      ge  - GJ enrolled (1/0)
+      ent - GJ entitlement units
+      uPct- GJ entitlement utilization %
+      subM- GJ monthly subsidy received (rupees)
+      warn- GJ cliff warning level
+      buf - units of buffer left before crossing entitlement
     """
     ext = result.extraction
     roi = result.solar_roi
@@ -189,7 +189,7 @@ def build_main_factpack(result: AnalysisResult) -> dict[str, Any]:
             pack["bk"] = "hard"     # next cliff is the 200-unit hard cap
         else:
             pack["buf"] = 0
-            pack["bk"] = "past"     # already over 200 — full subsidy lost
+            pack["bk"] = "past"     # already over 200 - full subsidy lost
 
         # Highest-precedence cliff warning, if any.
         from backend.output.response_composer import _pick_highest_precedence_warning
@@ -233,13 +233,13 @@ def build_followup_factpack(
 
 
 # =============================================================================
-# Validator — guards against hallucinated numbers.
+# Validator - guards against hallucinated numbers.
 # =============================================================================
 
 
 _NUMBER_TOKEN_RE = re.compile(r"\d[\d,]*(?:\.\d+)?")
 # Trivial values that carry no factual claim (counts, list indices, etc.).
-# NOTE: "0" is NOT in this set — it's a factual claim ("0 unit buffer",
+# NOTE: "0" is NOT in this set - it's a factual claim ("0 unit buffer",
 # "Rs. 0 paid") and the AI has been observed hallucinating it. If the
 # fact-pack genuinely contains 0, the value is exposed via _factpack_numbers
 # and the AI's "0" passes validation; otherwise the AI is rejected.
@@ -286,7 +286,7 @@ def validate_ai_output(text: str, pack: dict[str, Any]) -> bool:
 
 
 # =============================================================================
-# Groq client — lazy import so non-AI paths don't need the SDK.
+# Groq client - lazy import so non-AI paths don't need the SDK.
 # =============================================================================
 
 
@@ -327,7 +327,7 @@ def _call_groq(
     except json.JSONDecodeError as e:
         logger.warning("groq returned non-JSON: %s", e)
         return None
-    except Exception as e:  # noqa: BLE001 — fallback path covers everything
+    except Exception as e:  # noqa: BLE001 - fallback path covers everything
         logger.warning("groq call failed: %s", e)
         return None
 
