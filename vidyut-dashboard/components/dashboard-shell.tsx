@@ -27,6 +27,7 @@ import {
   getMetrics,
   getTrend,
 } from "../lib/api";
+import { MOCK_ACTIVITY, MOCK_METRICS, makeMockTrend } from "../lib/mock-data";
 
 type MetricCardProps = {
   title: string;
@@ -138,8 +139,23 @@ export default function DashboardShell() {
   const [trend, setTrend] = useState<TrendBucket[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>("never");
+  const [useMock, setUseMock] = useState(false);
+  const [usingMock, setUsingMock] = useState(false);
+
+  function showMockData() {
+    setMetrics(MOCK_METRICS);
+    setActivities(MOCK_ACTIVITY);
+    setTrend(makeMockTrend());
+    setUsingMock(true);
+    setLastUpdated(new Date().toLocaleTimeString());
+  }
 
   async function refresh() {
+    if (useMock) {
+      setError(null);
+      showMockData();
+      return;
+    }
     try {
       setError(null);
       const [m, a, t] = await Promise.all([
@@ -150,9 +166,11 @@ export default function DashboardShell() {
       setMetrics(m);
       setActivities(a.rows);
       setTrend(t.buckets);
+      setUsingMock(false);
       setLastUpdated(new Date().toLocaleTimeString());
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
+      showMockData();
     }
   }
 
@@ -161,7 +179,7 @@ export default function DashboardShell() {
     const id = setInterval(refresh, 60_000);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [useMock]);
 
   const trendMaxRupees = useMemo(() => {
     const values = trend.flatMap((b) => [b.avg_bill, b.avg_solar_bill]);
@@ -267,7 +285,11 @@ export default function DashboardShell() {
               System Status
             </p>
             <p className="mt-1 text-[#cfe0d6]/80">
-              {error ? "Backend unreachable." : "All webhook services operational."}
+              {error
+                ? "Backend unreachable. Showing sample data."
+                : usingMock
+                  ? "Mock data mode. Live fetches paused."
+                  : "All webhook services operational."}
             </p>
             <p className="mt-3 text-[11px] text-marigold/70">Updated {lastUpdated}</p>
           </div>
@@ -298,13 +320,35 @@ export default function DashboardShell() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              {usingMock ? (
+                <span className="hidden rounded-full border border-gold/40 bg-gold/15 px-3 py-1 text-xs font-medium text-amber-800 md:inline-flex">
+                  Sample data
+                </span>
+              ) : null}
+              <button
+                onClick={() => setUseMock((v) => !v)}
+                className={[
+                  "flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition",
+                  useMock
+                    ? "border-gold/40 bg-gold/15 text-amber-800"
+                    : "border-ink/10 bg-paper-2 text-ink-soft hover:border-green/40 hover:text-green-deep",
+                ].join(" ")}
+              >
+                <span
+                  className={[
+                    "inline-block h-2 w-2 rounded-full",
+                    useMock ? "bg-gold" : "bg-ink-faint/50",
+                  ].join(" ")}
+                />
+                Mock data
+              </button>
               <Link
                 href="/"
                 className="hidden items-center gap-2 rounded-full border border-ink/10 bg-paper-2 px-4 py-2 text-sm text-ink-soft transition hover:border-green/40 hover:text-green-deep sm:inline-flex"
               >
                 <ArrowLeft size={16} /> Landing
               </Link>
-              <div className="flex items-center gap-2 rounded-full border border-ink/10 bg-paper-2 px-4 py-2 text-sm text-ink-soft">
+              <div className="hidden items-center gap-2 rounded-full border border-ink/10 bg-paper-2 px-4 py-2 text-sm text-ink-soft sm:flex">
                 <UserRound size={16} />
                 <span>Admin</span>
               </div>
@@ -315,7 +359,9 @@ export default function DashboardShell() {
         <section className="space-y-6 px-4 py-6 md:px-8">
           {error ? (
             <div className="rounded-card border border-terracotta/30 bg-terracotta/10 p-4 text-sm text-bronze">
-              <p className="font-medium">Cannot reach admin API.</p>
+              <p className="font-medium">
+                Cannot reach admin API. Showing sample data below.
+              </p>
               <p className="mt-1">{error}</p>
               <p className="mt-2 text-xs text-terracotta">
                 Make sure Flask is running on port 5001 and NEXT_PUBLIC_ADMIN_PASSWORD
