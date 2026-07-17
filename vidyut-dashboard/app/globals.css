@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --bg-cream: #F8F7F3;
-  --black-deep: #000000;
-  --card-white: #FFFFFF;
-  --border-soft: #E5E7EB;
+  --bg-cream: #f4ecdd;
+  --black-deep: #18241d;
+  --card-white: #fbf7ee;
+  --border-soft: rgba(24, 36, 29, 0.1);
 }
 
 html,
@@ -20,4 +20,32 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+/* deep-green sidebar, mirrors the landing page's dark sections */
+.vm-sidebar-bg {
+  background: radial-gradient(
+    120% 80% at 50% 0%,
+    #134d39 0%,
+    #0d3a2a 55%,
+    #0a2c20 100%
+  );
+}
+
+/* jaali lattice, same tile as landing.css .footer-jaali */
+.vm-jaali {
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='64'%20height='64'%3E%3Cg%20fill='none'%20stroke='%23d9714e'%20stroke-width='1'%3E%3Ccircle%20cx='0'%20cy='0'%20r='32'/%3E%3Ccircle%20cx='64'%20cy='0'%20r='32'/%3E%3Ccircle%20cx='0'%20cy='64'%20r='32'/%3E%3Ccircle%20cx='64'%20cy='64'%20r='32'/%3E%3Ccircle%20cx='32'%20cy='32'%20r='32'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 64px 64px;
+}
+
+/* chamfered edge, same polygon as landing.css --chamfer */
+.vm-chamfer {
+  clip-path: polygon(
+    14px 0,
+    calc(100% - 14px) 0,
+    100% 50%,
+    calc(100% - 14px) 100%,
+    14px 100%,
+    0 50%
+  );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import {
   MoreVertical,
   Paperclip,
@@ -137,7 +138,36 @@ export default function ChatFallbackPage() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#f0f2f5] overflow-hidden font-sans">
+    <div className="flex min-h-screen flex-col bg-cream">
+      {/* Brand chrome */}
+      <header className="flex items-center justify-between px-4 py-3 md:px-8">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.2em] text-green-deep">
+            VidyutMitra
+          </p>
+          <h1 className="font-serif text-xl font-semibold tracking-tight text-ink">
+            WhatsApp Demo Simulator
+          </h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="rounded-full border border-green/40 px-4 py-1.5 text-sm text-green-deep transition hover:bg-green/10"
+          >
+            Landing
+          </Link>
+          <Link
+            href="/dashboard"
+            className="rounded-full border border-green/40 px-4 py-1.5 text-sm text-green-deep transition hover:bg-green/10"
+          >
+            Dashboard
+          </Link>
+        </div>
+      </header>
+
+      <div className="flex-1 px-2 pb-4 md:px-6 md:pb-6">
+        <div className="h-[calc(100vh-84px)] overflow-hidden rounded-2xl border border-ink/10 shadow-card">
+          <div className="flex h-full w-full bg-[#f0f2f5] overflow-hidden font-sans">
       {/* Left Sidebar */}
       <div className="w-[30%] min-w-[300px] border-r border-[#d1d7db] bg-white flex flex-col z-10 transition-transform md:translate-x-0 hidden md:flex">
         {/* Header */}
@@ -308,6 +338,9 @@ export default function ChatFallbackPage() {
           >
             { (inputValue.trim() || selectedFile) && !isLoading ? <Send size={24} /> : <Mic size={24} /> }
           </button>
+        </div>
+      </div>
+          </div>
         </div>
       </div>
     </div>
