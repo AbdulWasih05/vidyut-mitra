@@ -7,6 +7,15 @@
 const API_BASE =
   process.env.NEXT_PUBLIC_ADMIN_API ?? "http://localhost:5001/admin";
 
+// True when a live admin API is worth trying: either an explicit
+// NEXT_PUBLIC_ADMIN_API was configured at build time, or the page is
+// running on localhost where the Flask dev server may be up. In prod
+// with no configured API the dashboard should not fire doomed fetches.
+export const isApiConfigured = () =>
+  Boolean(process.env.NEXT_PUBLIC_ADMIN_API) ||
+  (typeof window !== "undefined" &&
+    ["localhost", "127.0.0.1"].includes(window.location.hostname));
+
 const ADMIN_TOKEN = process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? "";
 
 async function adminFetch<T>(path: string): Promise<T> {

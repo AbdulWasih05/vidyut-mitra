@@ -26,6 +26,7 @@ import {
   getActivity,
   getMetrics,
   getTrend,
+  isApiConfigured,
 } from "../lib/api";
 import { MOCK_ACTIVITY, MOCK_METRICS, makeMockTrend } from "../lib/mock-data";
 
@@ -141,6 +142,7 @@ export default function DashboardShell() {
   const [lastUpdated, setLastUpdated] = useState<string>("never");
   const [useMock, setUseMock] = useState(false);
   const [usingMock, setUsingMock] = useState(false);
+  const [backendOff, setBackendOff] = useState(false);
 
   function showMockData() {
     setMetrics(MOCK_METRICS);
@@ -151,6 +153,14 @@ export default function DashboardShell() {
   }
 
   async function refresh() {
+    // No hosted backend and not on localhost: use mock data without
+    // firing fetches that would spam the console with network errors.
+    if (!isApiConfigured()) {
+      setBackendOff(true);
+      setError(null);
+      showMockData();
+      return;
+    }
     if (useMock) {
       setError(null);
       showMockData();
@@ -277,7 +287,7 @@ export default function DashboardShell() {
               <span
                 className={[
                   "inline-block h-2 w-2 rounded-full",
-                  error
+                  error || backendOff
                     ? "bg-terracotta shadow-[0_0_0_3px_rgba(217,113,78,0.2)]"
                     : "bg-marigold shadow-[0_0_0_3px_rgba(134,217,180,0.2)]",
                 ].join(" ")}
@@ -285,24 +295,26 @@ export default function DashboardShell() {
               System Status
             </p>
             <p className="mt-1 text-[#cfe0d6]/80">
-              {error
+              {error || backendOff
                 ? "Backend not hosted - showing mock data."
                 : usingMock
                   ? "Mock data mode - live fetches paused."
                   : "All webhook services operational."}
             </p>
-            <button
-              onClick={() => setUseMock((v) => !v)}
-              className={[
-                "mt-3 flex w-full items-center justify-between rounded-full border px-3 py-1.5 text-xs transition",
-                useMock
-                  ? "border-gold/40 bg-gold/15 text-gold"
-                  : "border-white/15 text-[#cfe0d6] hover:bg-white/10",
-              ].join(" ")}
-            >
-              Mock data
-              <span className="font-medium">{useMock ? "On" : "Off"}</span>
-            </button>
+            {backendOff ? null : (
+              <button
+                onClick={() => setUseMock((v) => !v)}
+                className={[
+                  "mt-3 flex w-full items-center justify-between rounded-full border px-3 py-1.5 text-xs transition",
+                  useMock
+                    ? "border-gold/40 bg-gold/15 text-gold"
+                    : "border-white/15 text-[#cfe0d6] hover:bg-white/10",
+                ].join(" ")}
+              >
+                Mock data
+                <span className="font-medium">{useMock ? "On" : "Off"}</span>
+              </button>
+            )}
             <p className="mt-3 text-[11px] text-marigold/70">Updated {lastUpdated}</p>
           </div>
         </div>
@@ -332,12 +344,12 @@ export default function DashboardShell() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Link
+              {/* <Link
                 href="/"
                 className="hidden items-center gap-2 rounded-full border border-ink/10 bg-paper-2 px-4 py-2 text-sm text-ink-soft transition hover:border-green/40 hover:text-green-deep sm:inline-flex"
               >
                 <ArrowLeft size={16} /> Landing
-              </Link>
+              </Link> */}
               <div className="hidden items-center gap-2 rounded-full border border-ink/10 bg-paper-2 px-4 py-2 text-sm text-ink-soft sm:flex">
                 <UserRound size={16} />
                 <span>Admin</span>
