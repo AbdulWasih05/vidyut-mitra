@@ -4,7 +4,9 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import "./landing.css";
 
-const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=15551445754&text=Hi";
+// Twilio sandbox CTA - restore once the backend + WhatsApp sandbox are hosted:
+// const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=15551445754&text=Hi";
+const WHATSAPP_URL = "/chat";
 
 /* ═══════════════════════════════════════════════════════════════
    VidyutMitra - landing page

@@ -2,6 +2,9 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+
+import { isApiConfigured } from "../../lib/api";
+import { getMockReplies } from "../../lib/mock-chat";
 import {
   MoreVertical,
   Paperclip,
@@ -14,6 +17,7 @@ import {
   Mic,
   Loader2,
   FileImage,
+  MessageSquareText,
   Image as ImageIcon
 } from "lucide-react";
 
@@ -58,11 +62,35 @@ export default function ChatFallbackPage() {
     }
   }, [messages, isLoading]);
 
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  // Scripted replies when the backend is not hosted (or a live call fails):
+  // staggered so the typing indicator reads like a real conversation.
+  const respondWithMock = async (text: string, hasImage: boolean, msgId: string) => {
+    const replies = getMockReplies(text, hasImage);
+    for (let i = 0; i < replies.length; i++) {
+      await sleep(i === 0 ? 1200 : 900);
+      const body = replies[i];
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `b-${msgId}-mock-${i}`,
+          type: "text",
+          body,
+          sender: "bot",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
+    }
+  };
+
   const handleSend = async () => {
     if (!inputValue.trim() && !selectedFile) return;
 
     const newMsgId = Date.now().toString();
     const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const sentText = inputValue;
+    const hadImage = Boolean(selectedFile);
 
     // Optimistic UI for user message
     const formData = new FormData();
@@ -97,6 +125,13 @@ export default function ChatFallbackPage() {
     setIsLoading(true);
 
     try {
+      // No hosted backend: answer with scripted demo replies instead of
+      // firing a fetch that is guaranteed to fail.
+      if (!isApiConfigured()) {
+        await respondWithMock(sentText, hadImage, newMsgId);
+        return;
+      }
+
       const res = await fetch("http://localhost:5001/api/web-chat", {
         method: "POST",
         body: formData,
@@ -104,7 +139,7 @@ export default function ChatFallbackPage() {
 
       if (!res.ok) throw new Error("Server error");
       const data = await res.json();
-      
+
       const botMessages: Message[] = data.responses.map((r: any, idx: number) => ({
         id: `b-${newMsgId}-${idx}`,
         type: r.type,
@@ -116,16 +151,8 @@ export default function ChatFallbackPage() {
 
       setMessages((prev) => [...prev, ...botMessages]);
     } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `err-${newMsgId}`,
-          type: "text",
-          body: "Sorry, I couldn't reach the server right now.",
-          sender: "bot",
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        }
-      ]);
+      // Live backend unreachable: degrade to the same scripted replies.
+      await respondWithMock(sentText, hadImage, newMsgId);
     } finally {
       setIsLoading(false);
     }
@@ -138,16 +165,24 @@ export default function ChatFallbackPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-cream">
+    <div className="relative flex min-h-screen flex-col bg-cream">
+      <div
+        aria-hidden
+        className="vm-jaali pointer-events-none absolute inset-0 opacity-[0.05]"
+      />
+
       {/* Brand chrome */}
-      <header className="flex items-center justify-between px-4 py-3 md:px-8">
+      <header className="relative z-10 flex items-center justify-between gap-4 px-4 py-4 md:px-8">
         <div>
           <p className="text-[11px] uppercase tracking-[0.2em] text-green-deep">
             VidyutMitra
           </p>
-          <h1 className="font-serif text-xl font-semibold tracking-tight text-ink">
+          <h1 className="font-serif text-2xl font-semibold tracking-tight text-ink">
             WhatsApp Demo Simulator
           </h1>
+          <p className="mt-0.5 text-xs text-ink-faint">
+            The same pipeline as the WhatsApp bot, running in your browser
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Link
@@ -165,9 +200,81 @@ export default function ChatFallbackPage() {
         </div>
       </header>
 
-      <div className="flex-1 px-2 pb-4 md:px-6 md:pb-6">
-        <div className="h-[calc(100vh-84px)] overflow-hidden rounded-2xl border border-ink/10 shadow-card">
-          <div className="flex h-full w-full bg-[#f0f2f5] overflow-hidden font-sans">
+      <div className="relative z-10 flex-1 px-2 pb-4 md:px-6 md:pb-6">
+        <div className="grid h-full gap-4 lg:grid-cols-[320px,1fr]">
+          <aside className="hidden flex-col gap-4 lg:flex">
+            <div className="rounded-2xl border border-ink/10 bg-paper p-5 shadow-card">
+              <h2 className="font-serif text-lg font-semibold text-ink">
+                How to try it
+              </h2>
+              <ol className="mt-3 space-y-3 text-sm text-ink-soft">
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green/10 font-serif text-[13px] font-semibold text-green-deep">
+                    1
+                  </span>
+                  Say &ldquo;Hi&rdquo; to wake the bot.
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green/10 font-serif text-[13px] font-semibold text-green-deep">
+                    2
+                  </span>
+                  Attach a MESCOM bill photo with the paperclip.
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green/10 font-serif text-[13px] font-semibold text-green-deep">
+                    3
+                  </span>
+                  Get the full analysis: tariff, subsidies, solar ROI.
+                </li>
+              </ol>
+            </div>
+
+            <div className="rounded-2xl border border-ink/10 bg-paper p-5 shadow-card">
+              <h2 className="font-serif text-lg font-semibold text-ink">
+                What you&apos;ll get
+              </h2>
+              <ul className="mt-3 space-y-3 text-sm text-ink-soft">
+                <li className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green/10 text-green-deep">
+                    <MessageSquareText size={16} />
+                  </span>
+                  Plain-language bill breakdown
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-terracotta/10 text-terracotta">
+                    <Mic size={16} />
+                  </span>
+                  Kannada voice-note summary
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold/15 text-amber-800">
+                    <FileImage size={16} />
+                  </span>
+                  Shareable savings infographic
+                </li>
+              </ul>
+            </div>
+
+            <div className="vm-sidebar-bg relative overflow-hidden rounded-2xl border border-white/10 p-5 text-sm">
+              <div
+                aria-hidden
+                className="vm-jaali pointer-events-none absolute inset-0 opacity-[0.07]"
+              />
+              <div className="relative z-10">
+                <h2 className="font-serif text-lg font-semibold text-white">
+                  Demo note
+                </h2>
+                <p className="mt-2 leading-relaxed text-[#cfe0d6]/90">
+                  Replies come from the Flask backend. While it is not hosted,
+                  the bot answers with scripted demo replies built on real
+                  KERC 2025 tariff math.
+                </p>
+              </div>
+            </div>
+          </aside>
+
+          <div className="h-[calc(100vh-124px)] overflow-hidden rounded-2xl border border-ink/10 shadow-card">
+            <div className="flex h-full w-full bg-[#f0f2f5] overflow-hidden font-sans">
       {/* Left Sidebar */}
       <div className="w-[30%] min-w-[300px] border-r border-[#d1d7db] bg-white flex flex-col z-10 transition-transform md:translate-x-0 hidden md:flex">
         {/* Header */}
@@ -237,7 +344,7 @@ export default function ChatFallbackPage() {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-[5%] lg:px-[10%] py-4 z-10 flex flex-col" ref={scrollRef}>
            <div className="bg-[#ffeecd] px-3 py-1.5 rounded-lg text-xs text-[#54656f] text-center w-fit mx-auto shadow-sm mb-4">
-              Messages to this chat and calls are strictly internal for the hackathon demo.
+              This is a live demo of VidyutMitra&apos;s energy assistant.
            </div>
           {messages.map((msg) => (
             <div
@@ -340,6 +447,7 @@ export default function ChatFallbackPage() {
           </button>
         </div>
       </div>
+            </div>
           </div>
         </div>
       </div>
